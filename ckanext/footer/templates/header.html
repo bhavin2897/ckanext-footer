@@ -1,12 +1,12 @@
 {% ckan_extends %}
 <!--h.example_theme_welcome_widget-->
 {% block header_site_navigation_tabs %}
-{% set help_url = h.url_for('footer.help') %}
+
  {{ h.build_nav_main(
         ('dataset.search', _('Datasets')),
         ('organization.index', _('Repositories')),
         ('home.about', _('About')),
-        (help_url,_('Help'))
+        ('footer.help',_('Help'))
   )
   }}
 
