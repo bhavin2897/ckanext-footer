@@ -46,4 +46,3 @@ class FooterPlugin(plugins.SingletonPlugin):
             methods=['GET']
         )
         return blueprint
-
