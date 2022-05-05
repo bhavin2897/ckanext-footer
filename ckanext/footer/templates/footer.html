@@ -31,22 +31,24 @@
     </div>
 
     <div class = "row">
-        <div class = "col-md-3 footer-links">
+        <div class = "col-md-4 footer-links">
             <a href="{{ h.url_for( '/imprint') }}">{{ _('Imprint') }}</a>
         </div>
-        <div class = "col-md-3 footer-links">
+        <div class = "col-md-4 footer-links">
             <a href="{{ h.url_for( '/data_protection') }}">{{ _('Data Protection') }}</a>
         </div>
-        <div class = "col-md-2 footer-links">
-            {% set api_url = 'http://docs.ckan.org/en/{0}/api/'.format(g.ckan_doc_version) %}
-            <a href="{{ api_url }}" target="_blank">{{ _('CKAN API') }}</a>
-        </div>
+<!--        <div class = "col-md-2 footer-links">-->
+<!--            {% set api_url = 'http://docs.ckan.org/en/{0}/api/'.format(g.ckan_doc_version) %}-->
+<!--            <a href="{{ api_url }}" target="_blank">{{ _('CKAN API') }}</a>-->
+<!--        </div>-->
 
         <div class = "col-md-2 footer-links">
+            <i class = "fa fa-linkedin-square "> </i>
             <a href="https://www.linkedin.com/company/nfdi4chem/"  target="_blank">{{ _('LinkedIn') }}</a>
         </div>
 
         <div class = "col-md-2 footer-links">
+            <i class = "fa fa-twitter-square"> </i>
             <a href=" https://twitter.com/nfdi4chem" target="_blank">{{ _('Twitter') }}</a>
         </div>
 
