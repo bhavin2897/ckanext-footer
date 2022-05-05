@@ -1,0 +1,54 @@
+{% ckan_extends %}
+
+{% block footer_content %}
+    <div class="row">
+      <div class="col-md-4 attribution">
+        {% block footer_nav %}
+          <ul class="list-unstyled">
+            {% block footer_links %}
+               <a  href="https://www.dfg.de/" target="_blank">
+                <img src="/dfg_logo_schriftzug_weiss_foerderung_en.gif" alt="dfg.de" width ="300" height="100"> </a>
+
+            {% endblock %}
+          </ul>
+      </div>
+       <div class = "col-md-4 footer-links">
+          <ul class="list-unstyled">
+            {% block footer_links_ckan %}
+              {% set api_url = 'http://docs.ckan.org/en/{0}/api/'.format(g.ckan_doc_version) %}
+                <li><a href="{{ h.url_for(controller='home', action='about') }}">{{ _('About {0}').format(g.site_title)) }}</a></li>
+               <li> <a href="https://www.nfdi4chem.de/"  target="_blank">{{ _('NFDI4Chem Website') }} </a> </li>
+               <li><a href="{{ h.url_for( '/help') }}">{{ _('Help') }}</a></li>
+            {% endblock %}
+          </ul>
+        {% endblock %}
+      </div>
+      <div class="col-md-4 attribution">
+        {% block footer_attribution %}
+          <p> <strong> NFDI4Chem Powered by </strong> <a  href="https://www.tib.eu/en/" target="_blank"> <img src="/tib-logo-en-hell.svg" alt="tib.eu" width="210" height="70"></a> </p>
+        {% endblock %}
+      </div>
+    </div>
+
+    <div class = "row">
+        <div class = "col-md-3 footer-links">
+            <a href="{{ h.url_for( '/imprint') }}">{{ _('Imprint') }}</a>
+        </div>
+        <div class = "col-md-3 footer-links">
+            <a href="{{ h.url_for( '/data_protection') }}">{{ _('Data Protection') }}</a>
+        </div>
+        <div class = "col-md-2 footer-links">
+            <a href="{{ api_url }}">{{ _('CKAN API') }}</a>
+        </div>
+
+        <div class = "col-md-2 footer-links">
+            <a href="https://www.linkedin.com/company/nfdi4chem/">{{ _('LinkedIn') }}</a>
+        </div>
+
+        <div class = "col-md-2 footer-links">
+            <a href=" https://twitter.com/nfdi4chem ">{{ _('Twitter') }}</a>
+        </div>
+
+    </div>
+    {% endblock %}
+

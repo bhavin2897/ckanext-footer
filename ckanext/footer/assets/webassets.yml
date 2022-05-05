@@ -1,0 +1,14 @@
+# footer-js:
+#   filter: rjsmin
+#   output: ckanext-footer/%(version)s-footer.js
+#   contents:
+#     - js/footer.js
+#   extra:
+#     preload:
+#       - base/main
+
+# footer-css:
+#   filter: cssrewrite
+#   output: ckanext-footer/%(version)s-footer.css
+#   contents:
+#     - css/footer.css

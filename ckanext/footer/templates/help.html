@@ -1,0 +1,19 @@
+{% extends "home/about.html" %}
+
+{% block subtitle %}{{ _('Help') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Help'), 'localhost:5000/help' %}</li>
+{% endblock %}
+
+{% block primary %}
+  <article class="module" role="main">
+    <div class="module-content">
+      {% block about %}
+        {% snippet 'snippets/ckanext_footer_help.html' %}
+      {% endblock %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}

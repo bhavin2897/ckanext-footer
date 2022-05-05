@@ -1,0 +1,19 @@
+{% extends "home/about.html" %}
+
+{% block subtitle %}{{ _('Imprint') }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{% link_for _('Imprint'), 'home.imprint' %}</li>
+{% endblock %}
+
+{% block primary %}
+  <article class="module" role="main">
+    <div class="module-content">
+      {% block about %}
+        {% snippet 'snippets/ckanext_footer_imprint.html' %}
+      {% endblock %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block secondary %}{% endblock %}
