@@ -10,7 +10,11 @@
 <p> Your request goes out to all members of the NFDI4Chem Helpdesk and will be picked up by the person with the
     greatest expertise on the particular topic. </p>
 
-
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script><button id="feedback-form">
+    Contact Helpdesk</button> <script id="zammad_form_script" src="https://helpdesk.nfdi4chem.de/assets/form/form.js"></script>
+   <script> $(function()
+        {  $('#feedback-form').ZammadForm({    messageTitle: 'Feedback Form',    messageSubmit: 'Send',
+    messageThankYou: 'Thank your for your inquiry (#%s). We will get in touch with you soon!',    modal: true  }); }); </script>
 
 <h4> Interested in the work of NFDI4Chem Project?</h4>
 <p> For announcements relating to our NFDI4Chem project such as new services or events,
