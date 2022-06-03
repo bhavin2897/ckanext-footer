@@ -1,6 +1,7 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from flask import Blueprint, render_template
+from routes.mapper import SubMapper
 
 def help():
     return render_template('help.html')
@@ -86,7 +87,7 @@ class FooterPlugin(plugins.SingletonPlugin):
                      '/api/rest/group/{url:.*}')
 
         map.connect('repository_members_read', '/repository/members/{id}',
-                    controller='ckanext.iati.controllers.repository:repositoryController',
+                    controller='ckanext.footer.controllers.repository:repositoryController',
                     action='members_read', ckan_icon='group')
 
         return map
