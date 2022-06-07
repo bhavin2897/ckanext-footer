@@ -1,9 +1,8 @@
 {% ckan_extends %}
 
-
 {% block footer_content %}
     <div class="row">
-      <div class="col-md-4 attribution">
+      <div class="col-md-3 attribution">
         {% block footer_nav %}
           <ul class="list-unstyled">
             {% block footer_links %}
@@ -15,18 +14,29 @@
             {% endblock %}
           </ul>
       </div>
-       <div class = "col-md-4 footer-links">
+       <div class = "col-md-3 footer-links">
           <ul class="list-unstyled">
             {% block footer_links_ckan %}
-
                 <li><a href="{{ h.url_for(controller='home', action='about') }}">{{ _('About') }}</a></li>
-               <li> <a href="https://www.nfdi4chem.de/"  target="_blank">{{ _('NFDI4Chem Website') }} </a> </li>
-               <li><a href="{{ h.url_for( '/help') }}">{{ _('Help') }}</a></li>
+                <li><a href="{{ h.url_for( '/help') }}">{{ _('Help') }}</a></li>
+                <li> <a href="{{ h.url_for( '/imprint') }}">{{ _('Imprint') }}</a></li>
+                <li> <a href="{{ h.url_for( '/data_protection') }}">{{ _('Data Protection') }}</a></li>
+
             {% endblock %}
           </ul>
         {% endblock %}
       </div>
-      <div class="col-md-4 attribution">
+      <div class="col-md-3 attribution">
+         <ul class="list-unstyled">
+            {% block footer_links_ckan %}
+                <li> <a href="https://www.nfdi4chem.de/"  target="_blank">{{ _('NFDI4Chem Website') }} </a> </li>
+                <li> <a href="https://www.nfdi4chem.de/index.php/frequently-asked-questions/"  target="_blank">{{ _('NFDI4Chem FAQ') }} </a> </li>
+                <li> <a href="https://www.nfdi4chem.de/index.php/helpdesk/"  target="_blank">{{ _('NFDI4Chem Helpdesk') }} </a> </li>
+                <li> <a href="https://terminology.nfdi4chem.de/ts/index" target="_blank"> {{ _('NFDI4Chem Terminology Service') }}</a> </li>
+            {% endblock %}
+         </ul>
+      </div>
+      <div class="col-md-3 attribution">
         {% block footer_attribution %}
           <p> <strong> Powered by </strong> <a  href="https://www.tib.eu/en/" target="_blank"> <img src="/TIB_Logo_EN_WM_W.SVG" alt="tib.eu" width="210" height="70"></a> </p>
         {% endblock %}
@@ -35,13 +45,7 @@
 
     <hr>
 
-    <div class = "row">
-        <div class = "col-md-4 footer-links">
-            <a href="{{ h.url_for( '/imprint') }}">{{ _('Imprint') }}</a>
-        </div>
-        <div class = "col-md-4 footer-links">
-            <a href="{{ h.url_for( '/data_protection') }}">{{ _('Data Protection') }}</a>
-        </div>
+    <div>
 <!--        <div class = "col-md-2 footer-links">-->
 <!--            {% set api_url = 'http://docs.ckan.org/en/{0}/api/'.format(g.ckan_doc_version) %}-->
 <!--            <a href="{{ api_url }}" target="_blank">{{ _('CKAN API') }}</a>-->
