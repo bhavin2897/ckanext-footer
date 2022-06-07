@@ -16,13 +16,11 @@
       </div>
        <div class = "col-md-3 footer-links">
           <ul class="list-unstyled">
-            {% block footer_links_ckan %}
                 <li><a href="{{ h.url_for(controller='home', action='about') }}">{{ _('About') }}</a></li>
                 <li><a href="{{ h.url_for( '/help') }}">{{ _('Help') }}</a></li>
                 <li> <a href="{{ h.url_for( '/imprint') }}">{{ _('Imprint') }}</a></li>
                 <li> <a href="{{ h.url_for( '/data_protection') }}">{{ _('Data Protection') }}</a></li>
 
-            {% endblock %}
           </ul>
         {% endblock %}
       </div>
