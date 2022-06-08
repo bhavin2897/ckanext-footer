@@ -9,8 +9,7 @@ from flask import Blueprint
 
 repository = Blueprint(u'repository', __name__, url_prefix=u'/repository',
                   url_defaults={u'group_type': u'group',
-                                u'is_organization': True,
-                                u'id': 'repository'})
+                                u'is_organization': True})
 
 
 def register_group_plugin_rules(blueprint):
