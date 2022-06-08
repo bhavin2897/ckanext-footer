@@ -38,10 +38,10 @@ def register_group_plugin_rules(blueprint):
         methods=[u'GET', u'POST'],
         view_func=DeleteGroupView.as_view(str(u'delete')))
 
-    for action in actions:
-        blueprint.add_url_rule(
-            u'/{0}/<id>'.format(action),
-            methods=[u'GET', u'POST'],
-            view_func=globals()[action])
+    #for action in actions:
+    #    blueprint.add_url_rule(
+    #        u'/{0}/<id>'.format(action),
+    #        methods=[u'GET', u'POST'],
+    #        view_func=globals()[action])
 
 register_group_plugin_rules(repository)
