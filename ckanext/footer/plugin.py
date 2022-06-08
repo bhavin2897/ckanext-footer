@@ -1,7 +1,7 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from flask import Blueprint, render_template
-from ckanext.footer.blueprints import repository
+
 
 def help():
     return render_template('help.html')
@@ -46,5 +46,5 @@ class FooterPlugin(plugins.SingletonPlugin):
             dataprotection,
             methods=['GET']
         )
-        return [blueprint,repository]
+        return blueprint
 
