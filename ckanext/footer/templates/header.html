@@ -2,8 +2,10 @@
 
 {% block header_site_navigation_tabs %}
 
+<li>
+    <a href="{{ h.url_for('/repository') }}">{{ _('Repositories') }}</a>
+</li>
  {{ h.build_nav_main(
-        ('repository.index',_('Repositories')),
         ('dataset.search', _('Datasets')),
         ('home.about', _('About')),
         ('footer.help',_('Help'))
