@@ -14,3 +14,19 @@
   }}
 
 {% endblock %}
+
+<div id="CookieAcceptBar" class = "cookieAcceptBar" style="display:block;">
+    Please accept
+    <a href="/data_protection#cookies"> cookies policy </a> <br>
+
+<script>
+        function cookieFunction() {
+  setCookie('ldm_cookies_accepted', 'active', 7); // cookie will expire in seven days
+  $('#cookieAcceptBar').fadeOut();
+}
+</script>
+    <button id="cookieAcceptBarConfirm" class = "cookieAcceptBarButton btn btn-success" onclick="cookieFunction()">
+        Accept and Close
+    </button>
+
+</div>
