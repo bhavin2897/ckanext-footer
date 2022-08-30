@@ -1,0 +1,56 @@
+{% import 'macros/form.html' as form %}
+
+{% set placeholder = placeholder if placeholder else _('Search datasets...') %}
+{% set sorting = sorting if sorting else [(_('Name Ascending'), 'name asc'), (_('Name Descending'), 'name desc')] %}
+{% set search_class = search_class if search_class else 'search-giant' %}
+{% set no_bottom_border = no_bottom_border if no_bottom_border else false %}
+{% set form_id = form_id if form_id else false %}
+
+<form {% if form_id %}id="{{ form_id }}" {% endif %}class="search-form{% if no_bottom_border %} no-bottom-border{% endif %}" method="get" data-module="select-switch">
+
+  {% block search_input %}
+    {% if h.search_autocomplete_enable_default_implementation() %}
+            <div class="search-autocomplete-wrapper"
+                 data-module="ckanext-search-autocomplete"
+                 data-module-suggestion-box="#search-autocomplete--suggestion-box"
+                 data-module-autocomplete-input="#field-giant-search" >
+                 {% snippet 'advanced_search/advanced_search_search_form.html' %}
+            </div>
+
+    {% endif %}
+  {% endblock %}
+
+
+  {% block search_search_fields %}
+    {% if fields -%}
+      <span>{{ form.hidden_from_list(fields=fields) }}</span>
+    {%- endif %}
+  {% endblock %}
+
+
+
+  {% block search_facets %}
+    {% if facets %}
+      <p class="filter-list">
+        {% for field in facets.fields %}
+          {% set search_facets_items = facets.search.get(field)['items'] %}
+          <span class="facet">{{ facets.titles.get(field) }}:</span>
+          {% for value in facets.fields[field] %}
+            <span class="filtered pill">
+              {%- if facets.translated_fields and (field,value) in facets.translated_fields -%}
+                {{ facets.translated_fields[(field,value)] }}
+              {%- else -%}
+                {{ h.list_dict_filter(search_facets_items, 'name', 'display_name', value) }}
+              {%- endif %}
+              <a href="{{ facets.remove_field(field, value) }}" class="remove" title="{{ _('Remove') }}"><i class="fa fa-times"></i></a>
+            </span>
+          {% endfor %}
+        {% endfor %}
+      </p>
+      <a class="show-filters btn btn-default">{{ _('Filter Results') }}</a>
+    {% endif %}
+  {% endblock %}
+
+</form>
+
+

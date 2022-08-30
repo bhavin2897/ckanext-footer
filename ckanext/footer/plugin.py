@@ -12,6 +12,8 @@ def imprint():
 def dataprotection():
     return render_template('data_protection.html')
 
+def searchbar():
+    return render_template('search_bar.html')
 
 class FooterPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
@@ -46,5 +48,11 @@ class FooterPlugin(plugins.SingletonPlugin):
             dataprotection,
             methods=['GET']
         )
-        return blueprint
 
+        blueprint.add_url_rule(
+            u'/search_bar',
+            u'search_bar',
+            searchbar,
+            methods=['GET']
+        )
+        return blueprint

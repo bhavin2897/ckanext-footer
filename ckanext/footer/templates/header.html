@@ -9,12 +9,16 @@
 
         ('dataset.search', _('Datasets')),
         ('home.about', _('About')),
-        ('footer.help',_('Help'))
+        ('footer.help',_('Help')),
   )
   }}
 
 {% endblock %}
 
+ {% block header_site_search %}
 
+    <a href="{{ h.url_for('/search_bar') }}" class="btn btn-primary"> <i class="fa fa-search"></i> </a>
+
+{% endblock %}
 
 
