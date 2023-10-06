@@ -1,6 +1,8 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from flask import Blueprint, render_template
+from ckanext.footer.controller.display_mol_image import FooterController
+
 
 
 def help():
@@ -12,19 +14,18 @@ def imprint():
 def dataprotection():
     return render_template('data_protection.html')
 
-def searchbar():
-    return render_template('search_bar.html')
+
 
 class FooterPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.ITemplateHelpers)
 
 
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
-        toolkit.add_resource('fanstatic',
-            'footer')
+        toolkit.add_resource('public/statics', 'footer')
 
     def get_blueprint(self):
         blueprint = Blueprint(self.name, self.__module__)
@@ -52,7 +53,22 @@ class FooterPlugin(plugins.SingletonPlugin):
         blueprint.add_url_rule(
             u'/search_bar',
             u'search_bar',
-            searchbar,
-            methods=['GET']
+            FooterController.searchbar,
+            methods=['GET', 'POST']
+        )
+
+        blueprint.add_url_rule(
+            u'/localhost:5000/dataset',
+            u'display_mol_image',
+            FooterController.display_search_mol_image,
+            methods=['GET','POST']
         )
         return blueprint
+
+
+    #ITemplate Helpers
+    def get_helpers(self):
+        return {'footer':FooterController.display_search_mol_image,
+                'searchbar': FooterController.searchbar,}
+
+

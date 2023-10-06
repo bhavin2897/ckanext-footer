@@ -1,0 +1,57 @@
+
+{% set imageName = imageName %}
+{% set return_value =  return_value%}
+
+{% asset 'statictheme/statictheme.css' %}
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/chevron-up.css' rel='stylesheet'>
+    <style>
+
+         /* Style for the collapsible content (initially hidden) */
+        collapsible {
+            margin: 10px 0; /* Add margin for spacing */
+            padding: 10px; /* Add padding for spacing */
+            background-color: #f1f1f1; /* Background color */
+            border: 1px solid #ddd; /* Border */
+            display: flex; /* Use flexbox to center the content horizontally */
+            flex-direction: column;
+            justify-content: center; /* Center the content horizontally */
+            align-items: center; /* Center the content vertically */
+            text-align: center; /* Center the text (if any) */
+        }
+        .collapsible img {
+            max-width: 100%; /* Ensure the image doesn't exceed the container width */
+        }
+
+        /* Style for the collapse button/icon */
+        .collapse-button {
+            background-color: #009CBC;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+
+<script>
+        // JavaScript function to toggle the collapse
+        function toggleCollapse() {
+            var collapsible = document.getElementById("myCollapsible");
+            if (collapsible.style.display === "none" || collapsible.style.display === "") {
+                collapsible.style.display = "block"; // Expand the content
+            } else {
+                collapsible.style.display = "none"; // Collapse the content
+            }
+        }
+    </script>
+
+    <button class="collapse-button" onclick="toggleCollapse()">
+            <i class="fas fa-chevron-up"> View Molecular Image</i> <!-- Font Awesome icon for "up" arrow -->
+        </button>
+<br>
+
+     <div id="myCollapsible" class="collapsible">
+         <div>
+            <img id="search_image" src="data:image/png;base64,{{return_value}}" alt="{{imageName}}"/>
+        </div>
+     </div>
+    <br>

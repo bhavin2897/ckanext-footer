@@ -1,0 +1,61 @@
+{% extends "package/search.html" %}
+
+{% import 'macros/form.html' as form %}
+
+{% block subtitle %}{% endblock %}
+
+{% block breadcrumb_content %}
+{% endblock %}
+
+
+
+{% block primary %}
+
+    <section class="module">
+
+    <div class="module-content">
+      {% block page_primary_action %}
+         <h1> Search   </h1>
+      {% endblock %}
+
+      {% block form %}
+        <form class="module-content search-form" method="get" action="{% url_for 'dataset.search' %}">
+        {% snippet 'snippets/ckanext_footer_search_form.html', form_id='dataset-search-form', type='dataset', query=q, sorting=sorting, sorting_selected=sort_by_selected, placeholder= '...', facets=facets, show_empty=request.params, error=query_error, fields=fields, count=page.item_count %}
+            </form>
+      {% endblock %}
+
+    </div>
+  </section>
+
+    {% block package_search_results_list %}
+
+        {% if return_value %}
+
+            <h3> {{return_value}} </h3>
+
+            <div class="container">
+            <div class="row">
+                <div class="col-md-12 d-flex justify-content-center align-items-center" style="height: 100vh;">
+                    <div>
+                        <h2> Molecular Search </h2>
+                        <img id="search_image" src="data:image/png;base64,{{return_value}}" alt="{{firstPackage.inchi_key}}"/>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <br>
+        {% endif %}
+
+
+
+    {% endblock %}
+{% endblock %}
+
+
+
+{% block secondary_content %}
+{% endblock %}
+
+
+{% block secondary %}
+{% endblock %}
