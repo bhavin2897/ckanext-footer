@@ -1,0 +1,63 @@
+{% extends "page.html" %}
+{% import 'macros/form.html' as form %}
+
+
+{% set packages = h.package_list()  %}
+{% set package_result = packages.results %}
+
+{% set firstPackage = [] %}
+
+{% set first_inchi_key = package_result[0]['inchi_key'] %}
+
+{% for item in package_result %}
+    {% if loop.first %}
+        {% set first_dataset = item %}
+    {% endif %}
+{% endfor %}
+
+
+{% set packages_count = packages.count %}
+
+
+
+{% block primary %}
+{% if first_inchi_key %}
+    <div class="module-content">
+        <h1> {{ packages_count }} Dataset(s) found </h1>
+
+      {% block form %}
+        {% set facets = {
+          'fields': fields_grouped,
+          'search': search_facets,
+          'titles': facet_titles,
+          'translated_fields': translated_fields,
+          'remove_field': remove_field }
+        %}
+        {% set sorting = [
+          (_('Relevance'), 'score desc, metadata_modified desc'),
+          (_('Name Ascending'), 'title_string asc'),
+          (_('Name Descending'), 'title_string desc'),
+          (_('Last Modified'), 'metadata_modified desc'),
+          (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
+        %}
+
+      {% endblock %}
+
+      {% block package_search_results_list %}
+      {% set return_value = h.footer(package_inchiKey = first_inchi_key, page = packages) %}
+    <div>
+      {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_value, imageName = first_inchi_key %}
+      </div>
+        {{ h.snippet('snippets/package_list.html', packages= packages.results ) }}
+      {% endblock %}
+        <br>
+    </div>
+{% else %}
+ <div class="module-content ">
+     <h2> No Molecules found </h2>
+ </div>
+{% endif %}
+{% endblock %}
+
+
+{% block secondary %}{% endblock %}
