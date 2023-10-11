@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ckanext-footer.iml" filepath="$PROJECT_DIR$/.idea/ckanext-footer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../ckanext-relationship/.idea/ckanext-relationship.iml" filepath="$PROJECT_DIR$/../ckanext-relationship/.idea/ckanext-relationship.iml" />
     </modules>
   </component>
 </project>

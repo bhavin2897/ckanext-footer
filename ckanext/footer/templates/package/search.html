@@ -11,9 +11,12 @@
     {% if firstPackage.inchi_key  %}
         {% set controllerUrl = h.url_for('footer.display_mol_image', package_inchiKey = firstPackage.inchi_key, page=page, _external=True) %}
         {% set return_value = h.footer(package_inchiKey = firstPackage.inchi_key, page = page) %}
-    <div >
-    {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_value, imageName = firstPackage.inchi_key %}
-    </div>
+    {# image searched will be visible from here, when added #}
+    {#
+<!--    <div >-->
+<!--    {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_value, imageName = firstPackage.inchi_key %}-->
+<!--    </div>-->
+#}
     {% endif %}
 
     {{ super() }}
