@@ -3,11 +3,11 @@
 
 
 {% set packages = h.package_list()  %}
-{% set package_result = packages.results %}
-
-{% set firstPackage = [] %}
-
-{% set first_inchi_key = package_result[0]['inchi_key'] %}
+{% if packages is not None %}
+    {% set package_result = packages.results %}
+    {% set firstPackage = [] %}
+    {% set first_inchi_key = package_result[0]['inchi_key'] %}
+{% endif %}
 
 {% for item in package_result %}
     {% if loop.first %}
