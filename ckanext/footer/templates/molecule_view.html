@@ -6,8 +6,9 @@
 {% set package_result = packages.results %}
 
 {% set firstPackage = [] %}
-
-{% set first_inchi_key = package_result[0]['inchi_key'] %}
+{% if package_result is not none %}
+    {% set first_inchi_key = package_result[0]['inchi_key'] %}
+{% endif %}
 
 {% for item in package_result %}
     {% if loop.first %}
@@ -17,11 +18,10 @@
 
 
 {% set packages_count = packages.count %}
-
-
-
+{{ first_inchi_key }}
 {% block primary %}
-{% if first_inchi_key %}
+
+{% if first_inchi_key is not none %}
     <div class="module-content">
         <h1> {{ packages_count }} Dataset(s) found </h1>
 
