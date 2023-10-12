@@ -19,8 +19,8 @@
 {% set packages_count = packages.count %}
 
 {% block primary %}
-<p> {{ package_result }}</p>
-{% if first_inchi_key %}
+
+{% if package_result %}
     <div class="module-content">
         <h1> {{ packages_count }} Dataset(s) found </h1>
 
