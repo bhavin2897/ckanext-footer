@@ -6,7 +6,7 @@
 {% if packages is not none %}
     {% set package_result = packages.results %}
     {% set firstPackage = [] %}
-    {% set first_inchi_key = package_result['inchi_key'] %}
+    {% set first_inchi_key = package_result[0]['inchi_key'] %}
 {% endif %}
 
 {% for item in package_result %}
