@@ -3,9 +3,9 @@
 
 
 {% set packages = h.package_list()  %}
-{% if packages is not none %}
-    {% set package_result = packages.results %}
-    {% set firstPackage = [] %}
+
+{% set package_result = packages.results %}
+{% if package_result|length != 0 %}
     {% set first_inchi_key = package_result[0]['inchi_key'] %}
 {% endif %}
 
@@ -19,8 +19,7 @@
 {% set packages_count = packages.count %}
 
 {% block primary %}
-
-{% if package_result %}
+{% if first_inchi_key %}
     <div class="module-content">
         <h1> {{ packages_count }} Dataset(s) found </h1>
 
