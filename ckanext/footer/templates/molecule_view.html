@@ -1,7 +1,6 @@
 {% extends "page.html" %}
 {% import 'macros/form.html' as form %}
 
-
 {% set packages = h.package_list()  %}
 {% if packages is not none %}
     {% set package_result = packages.results %}
