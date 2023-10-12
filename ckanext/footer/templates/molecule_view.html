@@ -3,7 +3,7 @@
 
 
 {% set packages = h.package_list()  %}
-{% if packages is not None %}
+{% if packages is not none %}
     {% set package_result = packages.results %}
     {% set firstPackage = [] %}
     {% set first_inchi_key = package_result[0]['inchi_key'] %}
