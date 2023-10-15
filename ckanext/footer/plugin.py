@@ -28,7 +28,6 @@ def molecule_view():
     return render_template('molecule_view.html')
 
 
-
 class FooterPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
@@ -53,7 +52,7 @@ class FooterPlugin(plugins.SingletonPlugin):
             u'/molecule_view',
             u'molecule_view',
             molecule_view,
-            methods=['GET']
+            methods=['GET', 'POST']
         )
 
         blueprint.add_url_rule(
@@ -91,9 +90,10 @@ class FooterPlugin(plugins.SingletonPlugin):
                 'searchbar': FooterController.searchbar,
                 'package_list': FooterPlugin.molecule_view_search, }
 
-
     @staticmethod
     def after_search(search_results: dict[str, Any], search_params: dict[str, Any]) -> dict[str, Any]:
+        log.debug(f' These are result {search_params}')
+        ## log.debug(f'These are the results {search_results}')
         session['search_results_final'] = search_results
         return search_results
 
