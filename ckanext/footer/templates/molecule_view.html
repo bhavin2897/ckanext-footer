@@ -21,7 +21,6 @@
 {% block primary %}
 {% if first_inchi_key %}
     <div class="module-content">
-        <p> {{ package_result[0]  }}</p>
         <h1> {{ packages_count }} Dataset(s) found </h1>
 
       {% block form %}
@@ -53,7 +52,6 @@
     </div>
 {% else %}
  <div class="module-content ">
-     <p> {{ package_result[0] }}</p>
      <h2> No Molecules found </h2>
  </div>
 {% endif %}
