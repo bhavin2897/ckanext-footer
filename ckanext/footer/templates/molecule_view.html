@@ -1,7 +1,7 @@
 {% extends "page.html" %}
 {% import 'macros/form.html' as form %}
 
-
+{% set dataset_type = 'dataset' or 'fancy_type'%}
 {% set packages = h.package_list()  %}
 
 {% set package_result = packages.results %}
@@ -16,12 +16,19 @@
 {% endfor %}
 
 
-{% set packages_count = packages.count %}
+{% set facet_titles = {'organization' : 'Repository',
+                'tags': 'Tags',
+                'res_format': 'Formats',
+                'license_id': 'Licenses'}
+%}
 
-{% block primary %}
+{% set packages_count = packages.count %}
+{% set search_facets = packages.search_facets %}
+{% block primary_content %}
+
 {% if first_inchi_key %}
     <div class="module-content">
-        <h1> {{ packages_count }} Dataset(s) found </h1>
+<!--        <h1> {{ packages_count }} Dataset(s) found </h1>-->
 
       {% block form %}
         {% set facets = {
@@ -31,14 +38,17 @@
           'translated_fields': translated_fields,
           'remove_field': remove_field }
         %}
-        {% set sorting = [
-          (_('Relevance'), 'score desc, metadata_modified desc'),
-          (_('Name Ascending'), 'title_string asc'),
-          (_('Name Descending'), 'title_string desc'),
-          (_('Last Modified'), 'metadata_modified desc'),
-          (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
-        %}
 
+
+{# <!--        {% set sorting = [-->
+<!--          (_('Relevance'), 'score desc, metadata_modified desc'),-->
+<!--          (_('Name '), 'title_string asc'),-->
+<!--          (_('Name Descending'), 'title_string desc'),-->
+<!--          (_('Last Modified'), 'metadata_modified desc'),-->
+<!--          (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]-->
+<!--        %}--> #}
+
+        {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
       {% endblock %}
 
       {% block package_search_results_list %}
@@ -52,10 +62,21 @@
     </div>
 {% else %}
  <div class="module-content ">
-     <h2> No Molecules found </h2>
+     {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
+<!--     <h2> No Molecules found </h2>-->
  </div>
 {% endif %}
 {% endblock %}
 
 
-{% block secondary %}{% endblock %}
+{% block secondary_content %}
+
+<div class="filters">
+    <div>
+      {% for facet in facet_titles %}
+        {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
+      {% endfor %}
+    </div>
+    <a class="close no-text hide-filters"><i class="fa fa-times-circle"></i><span class="text">close</span></a>
+  </div>
+{% endblock %}
