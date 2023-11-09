@@ -1,6 +1,9 @@
 
 {% set imageName = imageName %}
-{% set return_value =  return_value%}
+{% set return_value =  return_value %}
+{% set package = package %}
+{% set molecule_formula = molecule_formula %}
+{% set IUpacName = IUpacName %}
 
 {% asset 'statictheme/statictheme.css' %}
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/chevron-up.css' rel='stylesheet'>
@@ -30,6 +33,10 @@
             padding: 10px;
             cursor: pointer;
         }
+
+        .table-borderless td, .borderless th {
+        border: none;
+        }
     </style>
 
 <script>
@@ -44,19 +51,41 @@
         }
     </script>
 
-    <div>
-    <button class="collapse-button" onclick="toggleCollapse()">
-            <i class="fas fa-chevron-up"> View Molecular Image</i> <!-- Font Awesome icon for "up" arrow -->
-        </button>
-        <h3> Molecule </h3>
-        <h4> {{ imageName }}</h4>
-    </div>
-<br>
+<div class="row">
+    <p> Search term :  <b> {{ imageName }} </b> </p>
 
-
-     <div id="myCollapsible" class="collapsible">
+    <div class = "col col-md-5">
          <div>
             <img id="search_image" src="data:image/png;base64,{{return_value}}" alt="{{imageName}}"/>
-        </div>
-     </div>
+         </div>
+    </div>
+    <div class="col col-md-7">
+        <table class="table borderless">
+            <tbody>
+            {% if IUpacName %}
+            <tr>
+              <th scope="row" class="dataset-label">{{ _("IUPAC Name") }}</th>
+              <td class="dataset-details"> {{ IUpacName }}</td>
+            </tr>
+            {% endif %}
+
+            {% if molecule_formula %}
+            <tr>
+              <th scope="row" class="dataset-label">{{ _("Molecular Formula") }}</th>
+              <td class="dataset-details"> {{ molecule_formula }}</td>
+            </tr>
+            {% endif %}
+
+            {% if package.exactmass %}
+            <tr>
+              <th scope="row" class="dataset-label">{{ _("Molecular Mass") }}</th>
+              <td class="dataset-details"> {{ package.exactmass}} {{_("g/mol") }} </td>
+            </tr>
+            {% endif %}
+
+            </tbody>
+        </table>
+    </div>
+
     <br>
+</div>
