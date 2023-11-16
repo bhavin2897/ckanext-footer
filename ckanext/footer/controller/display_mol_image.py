@@ -117,4 +117,4 @@ class FooterController(plugins.SingletonPlugin):
 
         total_pages = math.ceil(total_datasets/page_size)
 
-        return package_list_inchi_key, current_page, total_pages
+        return package_list_inchi_key, current_page, total_pages, total_datasets

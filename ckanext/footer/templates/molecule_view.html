@@ -25,7 +25,7 @@
 {% set search_facets = packages.search_facets %}
 {% set first_package = package_result[0] %}
 {% set current_page_number = url_for(request.endpoint) %}
-{% set mol_dataset_list,current_page, total_pages = h.mol_package_list() %}
+{% set mol_dataset_list,current_page, total_pages, total_datasets = h.mol_package_list() %}
 
 
 
@@ -71,7 +71,7 @@
     </div>
 {% else %}
  <div class="module-content ">
-     {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
+     {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count = total_datasets , placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
      {{ h.snippet('snippets/package_list.html', packages= mol_dataset_list ) }}
 
     <div class="pagination-wrapper">
