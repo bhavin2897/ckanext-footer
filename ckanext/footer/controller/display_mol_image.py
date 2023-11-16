@@ -4,6 +4,7 @@ import ckan.plugins.toolkit as toolkit
 from flask import Blueprint, render_template, session
 
 import requests
+import math
 
 import logging
 import json
@@ -75,6 +76,11 @@ class FooterController(plugins.SingletonPlugin):
 
     def mol_dataset_list():
         # List of datasets which have inchi_key as molecular Image.
+        page = toolkit.request.args.get('page', 1, type=int)
+        current_page = page
+
+        page_size = 20
+
         package_list_inchi_key = []
 
         con = psycopg2.connect(user=DB_USER,
@@ -86,12 +92,15 @@ class FooterController(plugins.SingletonPlugin):
 
         # Cursor
         cur = con.cursor()
+        cur2 = con.cursor()
+        cur.execute("SELECT DISTINCT(package_id) FROM molecule_rel_data LIMIT %s OFFSET (%s - 1) * %s", (page_size, current_page, page_size))
 
-        cur.execute("SELECT DISTINCT(package_id) FROM molecule_rel_data")
-
+        cur2.execute("SELECT COUNT(DISTINCT(package_id)) FROM molecule_rel_data")
         dataset_id_list = cur.fetchall()
 
-        #log.debug(f'List of dataset {dataset_id_list}')
+        total_datasets = cur2.fetchone()[0]
+
+        #log.debug(f'nr of dataset {dataset_id_list}')
 
         # commit cursor
         con.commit()
@@ -104,6 +113,8 @@ class FooterController(plugins.SingletonPlugin):
             package = toolkit.get_action('package_show')({}, {'name_or_id': dataset_id})
             package_list_inchi_key.append(package)
 
-        log.debug(package_list_inchi_key[0])
+        #log.debug(package_list_inchi_key[0])
 
-        return package_list_inchi_key
+        total_pages = math.ceil(total_datasets/page_size)
+
+        return package_list_inchi_key, current_page, total_pages

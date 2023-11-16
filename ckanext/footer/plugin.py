@@ -25,6 +25,7 @@ def dataprotection():
 
 
 def molecule_view():
+
     return render_template('molecule_view.html')
 
 
