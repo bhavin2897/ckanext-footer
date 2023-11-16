@@ -93,7 +93,7 @@ class FooterController(plugins.SingletonPlugin):
         # Cursor
         cur = con.cursor()
         cur2 = con.cursor()
-        cur.execute("SELECT DISTINCT(package_id) FROM molecule_rel_data LIMIT %s OFFSET (%s - 1) * %s", (page_size, current_page, page_size))
+        cur.execute("SELECT DISTINCT ON (molecules_id) package_id FROM molecule_rel_data LIMIT %s OFFSET (%s - 1) * %s", (page_size, current_page, page_size))
 
         cur2.execute("SELECT COUNT(DISTINCT(package_id)) FROM molecule_rel_data")
         dataset_id_list = cur.fetchall()
