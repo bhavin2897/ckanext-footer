@@ -15,7 +15,6 @@
     {% endif %}
 {% endfor %}
 
-
 {% set facet_titles = {'organization' : 'Repository',
                 'tags': 'Tags',
                 'res_format': 'Formats',
@@ -26,8 +25,11 @@
 {% set search_facets = packages.search_facets %}
 {% set first_package = package_result[0] %}
 
-{% block primary_content %}
+{% set mol_dataset_list = h.mol_package_list() %}
 
+
+{% block primary_content %}
+<section class="module">
 {% if first_inchi_key %}
     <div class="module-content">
 <!--        <h1> {{ packages_count }} Dataset(s) found </h1>-->
@@ -55,22 +57,29 @@
       {% endblock %}
 
       {% block package_search_results_list %}
-      {% set return_value, mol_formula,IUpacName = h.footer(package_inchiKey = first_inchi_key, page = packages) %}
+        {% set return_value, mol_formula,IUpacName = h.footer(package_inchiKey = first_inchi_key, page = packages) %}
     <div>
       {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_value, imageName = first_inchi_key,
         package = first_package, molecule_formula = mol_formula, IUpacName = IUpacName %}
       </div>
         {{ h.snippet('snippets/package_list.html', packages= packages.results ) }}
       {% endblock %}
-        <br>
+
+
     </div>
 {% else %}
  <div class="module-content ">
      {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
-<!--     <h2> No Molecules found </h2>-->
+     {{ h.snippet('snippets/package_list.html', packages= mol_dataset_list ) }}
+
  </div>
 {% endif %}
 {% endblock %}
+
+{% block page_pagination %}
+    {{ page.pager(q=q) }}
+{% endblock %}
+</section>
 
 
 {% block secondary_content %}

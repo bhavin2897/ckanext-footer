@@ -88,12 +88,14 @@ class FooterPlugin(plugins.SingletonPlugin):
     def get_helpers(self):
         return {'footer': FooterController.display_search_mol_image,
                 'searchbar': FooterController.searchbar,
+                'mol_package_list': FooterController.mol_dataset_list,
                 'package_list': FooterPlugin.molecule_view_search, }
 
     @staticmethod
     def after_search(search_results: dict[str, Any], search_params: dict[str, Any]) -> dict[str, Any]:
-        log.debug(f' These are result {search_params}')
-        ## log.debug(f'These are the results {search_results}')
+
+        search_params = search_params.copy()
+
         session['search_results_final'] = search_results
         return search_results
 

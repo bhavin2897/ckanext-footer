@@ -25,6 +25,11 @@ from rdkit.Chem import rdMolDescriptors
 log = logging.getLogger(__name__)
 
 
+DB_HOST = "localhost"
+DB_USER = "ckan_default"
+DB_NAME = "ckan_default"
+DB_pwd = "123456789"
+
 # # Sample search values used for testing sample_search_q = 'BWFYMIDEWZXNAH-BNEYPBHNSA-N' sample_q = 'inchi_key:* AND
 # +inchi_key:("' + sample_search_q + '")' sample_search_q_val =
 # 'ext_composite_value=ZPPQIOUITZSYAO-UHFFFAOYSA-O&ext_composite_negation=&ext_composite_type=inchi_key
@@ -39,8 +44,6 @@ class FooterController(plugins.SingletonPlugin):
     @staticmethod
     def display_search_mol_image(package_inchiKey, page):
         inchi_key = package_inchiKey
-
-
 
         filepath = '/var/lib/ckan/default/storage/images/' + str(inchi_key) + '.png'
         file = open(filepath, 'rb').read()
@@ -62,10 +65,45 @@ class FooterController(plugins.SingletonPlugin):
         # Get IUPAC name using PubChem
         iupacName = r['PropertyTable']['Properties'][0]['IUPACName']
 
-        return byteimage, mol_formula,iupacName
+        return byteimage, mol_formula, iupacName
 
     def searchbar():
         byte_image = session.get('byteimage', None)
         page = session.get('page', None)
 
         return render_template('search_bar/search_bar.html', bytename=byte_image, page=page, )
+
+    def mol_dataset_list():
+        # List of datasets which have inchi_key as molecular Image.
+        package_list_inchi_key = []
+
+        con = psycopg2.connect(user=DB_USER,
+                               host=DB_HOST,
+                               password=DB_pwd,
+                               dbname=DB_NAME)
+
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+        # Cursor
+        cur = con.cursor()
+
+        cur.execute("SELECT DISTINCT(package_id) FROM molecule_rel_data")
+
+        dataset_id_list = cur.fetchall()
+
+        #log.debug(f'List of dataset {dataset_id_list}')
+
+        # commit cursor
+        con.commit()
+        # close cursor
+        cur.close()
+        # close connection
+        con.close()
+
+        for dataset_id in dataset_id_list:
+            package = toolkit.get_action('package_show')({}, {'name_or_id': dataset_id})
+            package_list_inchi_key.append(package)
+
+        log.debug(package_list_inchi_key[0])
+
+        return package_list_inchi_key
