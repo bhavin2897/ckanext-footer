@@ -93,10 +93,20 @@ class FooterController(plugins.SingletonPlugin):
         # Cursor
         cur = con.cursor()
         cur2 = con.cursor()
-        cur.execute("SELECT DISTINCT ON (molecules_id) package_id FROM molecule_rel_data LIMIT %s OFFSET (%s - 1) * %s", (page_size, current_page, page_size))
+        #cur.execute("SELECT DISTINCT ON (molecules_id) package_id FROM molecule_rel_data LIMIT %s OFFSET (%s - 1) * %s", (page_size, current_page, page_size))
+
+        cur.execute("SELECT m.inchi_key, a.package_ids FROM (SELECT molecules_id, STRING_AGG(package_id::text, ', ') AS "
+                    "package_ids FROM molecule_rel_data GROUP BY molecules_id) a JOIN molecules m ON a.molecules_id = m.id"
+                    " LIMIT %s OFFSET (%s - 1) * %s", (page_size, current_page, page_size))
 
         cur2.execute("SELECT COUNT(*) FROM (SELECT DISTINCT ON (molecules_id) package_id FROM molecule_rel_data) AS distinct_rows")
         dataset_id_list = cur.fetchall()
+
+
+        #type = dataset_id_list.type
+
+        #log.debug(f'Molecule ID : {dataset_id_list}')
+        #log.debug(f'package IDs : {dataset_id_list[1]}')
 
         total_datasets = cur2.fetchone()[0]
 
@@ -109,12 +119,29 @@ class FooterController(plugins.SingletonPlugin):
         # close connection
         con.close()
 
-        for dataset_id in dataset_id_list:
-            package = toolkit.get_action('package_show')({}, {'name_or_id': dataset_id})
-            package_list_inchi_key.append(package)
+        #for dataset_id in dataset_id_list:
+         #   package = toolkit.get_action('package_show')({}, {'name_or_id': dataset_id})
+        #  package_list_inchi_key.append(package)
 
-        #log.debug(package_list_inchi_key[0])
+        package_list_inchi_key = dataset_id_list
 
         total_pages = math.ceil(total_datasets/page_size)
 
         return package_list_inchi_key, current_page, total_pages, total_datasets
+
+
+    def package_show_dict(package_ids):
+
+        package_list_for_every_inchi =[]
+        try:
+            if package_ids:
+                package_ids_list = [package_ids]
+
+                for package_id in package_ids_list:
+                    package = toolkit.get_action('package_show')({}, {'name_or_id': package_id})
+                    package_list_for_every_inchi.append(package)
+                    # log.debug(f'{package_list_for_every_inchi}')
+        except Exception as e:
+            log.debug(e)
+
+        return package_list_for_every_inchi

@@ -90,6 +90,7 @@ class FooterPlugin(plugins.SingletonPlugin):
         return {'footer': FooterController.display_search_mol_image,
                 'searchbar': FooterController.searchbar,
                 'mol_package_list': FooterController.mol_dataset_list,
+                'package_list_for_every_inchi': FooterController.package_show_dict,
                 'package_list': FooterPlugin.molecule_view_search, }
 
     @staticmethod
