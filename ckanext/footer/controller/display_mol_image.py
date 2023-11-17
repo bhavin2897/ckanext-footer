@@ -44,6 +44,7 @@ class FooterController(plugins.SingletonPlugin):
 
     @staticmethod
     def display_search_mol_image(package_inchiKey, page):
+        global mol_formula, iupacName
         inchi_key = package_inchiKey
 
         filepath = '/var/lib/ckan/default/storage/images/' + str(inchi_key) + '.png'
@@ -58,13 +59,16 @@ class FooterController(plugins.SingletonPlugin):
         session['byteimage'] = byteimage
         session['page'] = page
 
+        try:
         # Get Molecular Formula using PubChem
-        r = requests.get(
-            f'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/{inchi_key}/property/MolecularFormula,IUPACName/JSON').json()
-        mol_formula = r['PropertyTable']['Properties'][0]['MolecularFormula']
+            r = requests.get(
+                f'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchikey/{inchi_key}/property/MolecularFormula,IUPACName/JSON').json()
+            mol_formula = r['PropertyTable']['Properties'][0]['MolecularFormula']
 
         # Get IUPAC name using PubChem
-        iupacName = r['PropertyTable']['Properties'][0]['IUPACName']
+            iupacName = r['PropertyTable']['Properties'][0]['IUPACName']
+        except Execption as e:
+            log.debug(e)
 
         return byteimage, mol_formula, iupacName
 
