@@ -67,7 +67,7 @@ class FooterController(plugins.SingletonPlugin):
 
         # Get IUPAC name using PubChem
             iupacName = r['PropertyTable']['Properties'][0]['IUPACName']
-        except Execption as e:
+        except Exception as e:
             log.debug(e)
 
         return byteimage, mol_formula, iupacName
