@@ -52,8 +52,7 @@
     </script>
 
 <div class="row">
-    <p> Molecule term :  <b> {{ imageName }} </b> </p>
-
+<!--    <p> {{ package }}</p>-->
     <div class = "col col-md-5">
          <div>
             <img id="search_image" src="data:image/png;base64,{{return_value}}" alt="{{imageName}}"/>
@@ -66,6 +65,20 @@
             <tr>
               <th scope="row" class="dataset-label">{{ _("IUPAC Name") }}</th>
               <td class="dataset-details"> {{ IUpacName }}</td>
+            </tr>
+            {% endif %}
+
+            {% if package.inchi %}
+            <tr>
+              <th scope="row" class="dataset-label">{{ _("InChI") }}</th>
+              <td class="dataset-details"> {{ package.inchi }}</td>
+            </tr>
+            {% endif %}
+
+            {% if imageName %}
+            <tr>
+              <th scope="row" class="dataset-label">{{ _("InChIKey") }}</th>
+              <td class="dataset-details"> {{ imageName }}</td>
             </tr>
             {% endif %}
 

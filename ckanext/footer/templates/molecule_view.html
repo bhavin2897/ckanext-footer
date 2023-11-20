@@ -86,20 +86,25 @@
      {# molecule with respective datasets view #}
         {% for molecules_id, packages in mol_dataset_list %}
         {% set return_value, mol_formula,IUpacName = h.footer(package_inchiKey = molecules_id, page = packages) %}
+
+     {% for package in packages.split(', ') %}
+            {% set package_dict_for_every_inchi = h.package_list_for_every_inchi(package) %}
          <div>
              {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_value, imageName = molecules_id,
-             package = packages[0], molecule_formula = mol_formula, IUpacName = IUpacName %}
+             package = package_dict_for_every_inchi[0], molecule_formula = mol_formula, IUpacName = IUpacName %}
          </div>
 
-            {% for package in packages.split(', ') %}
-            {% set package_dict_for_every_inchi = h.package_list_for_every_inchi(package)%}
+            <ul>
             <div>
+                <li>
             {{ h.snippet('snippets/package_list.html', packages = package_dict_for_every_inchi ) }}
                 <br>
+                </li>
             </div>
+         </ul>
 
             {% endfor %}
-            <hr>
+            <hr style = "height:1px;border-width:0;color:gray;background-color:black">
         {% endfor %}
 
 
