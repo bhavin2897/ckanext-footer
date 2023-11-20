@@ -96,14 +96,15 @@
 
             {% for package in packages.split(', ') %}
             {% set package_dict_for_every_inchi = h.package_list_for_every_inchi(package) %}
-            <ul>
+
             <div>
+                <ul>
                 <li>
-            {{ h.snippet('snippets/package_list.html', packages = package_dict_for_every_inchi ) }}
+                {{ h.snippet('snippets/package_list.html', packages = package_dict_for_every_inchi ) }}
                 <br>
                 </li>
+                    </ul>
             </div>
-         </ul>
 
             {% endfor %}
             <hr style = "height:1px;border-width:0;color:gray;background-color:black">
