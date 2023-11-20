@@ -1,8 +1,8 @@
 {% extends "page.html" %}
 {% import 'macros/form.html' as form %}
-
+{% import 'macros/form.html' as form_search %}
 {% set dataset_type = 'molecule_view' %}
-{% set packages = h.package_list()  %}
+{% set packages,search_params = h.package_list()  %}
 
 {% set package_result = packages.results %}
 {% if package_result|length != 0 %}
@@ -29,10 +29,9 @@
 
 
 
-
 {% block primary_content %}
 <section class="module">
-{% if first_inchi_key %}
+
     <div class="module-content">
 <!--        <h1> {{ packages_count }} Dataset(s) found </h1>-->
 
@@ -57,6 +56,8 @@
         {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
       {% endblock %}
 
+        {% if search_params %}
+
       {% block package_search_results_list %}
         {% set return_value, mol_formula,IUpacName = h.footer(package_inchiKey = first_inchi_key, page = packages) %}
 
@@ -70,7 +71,18 @@
     </div>
 {% else %}
  <div class="module-content ">
+
+    {#  {% block form_search %}
+        {% set facets = {
+          'fields': fields_grouped,
+          'search': search_facets,
+          'titles': facet_titles,
+          'translated_fields': translated_fields,
+          'remove_field': remove_field }
+        %}
+
      {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count = total_datasets , placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
+     {% endblock %} #}
 
      {# molecule with respective datasets view #}
         {% for molecules_id, packages in mol_dataset_list %}

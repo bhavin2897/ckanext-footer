@@ -25,7 +25,6 @@ def dataprotection():
 
 
 def molecule_view():
-
     return render_template('molecule_view.html')
 
 
@@ -98,9 +97,16 @@ class FooterPlugin(plugins.SingletonPlugin):
 
         search_params = search_params.copy()
 
+        if search_params['q'] == '*:*':
+            search_params_result = None
+        else:
+            search_params_result = search_params
+
         session['search_results_final'] = search_results
+        session['search_params'] = search_params_result
         return search_results
 
     def molecule_view_search():
         packages_list = session.get('search_results_final', None)
-        return packages_list
+        search_params = session.get('search_params', None)
+        return packages_list, search_params
