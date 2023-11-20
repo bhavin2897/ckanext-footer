@@ -70,7 +70,7 @@
 {% else %}
  <div class="module-content ">
 
-    {#  {% block form_search %}
+     {% block form_search %}
         {% set facets = {
           'fields': fields_grouped,
           'search': search_facets,
@@ -78,10 +78,10 @@
           'translated_fields': translated_fields,
           'remove_field': remove_field }
         %}
-        {% endblock %} #}
+
 
      {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count = total_datasets , placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
-
+    {% endblock %}
 
      {# molecule with respective datasets view #}
         {% for molecules_id, packages in mol_dataset_list %}
