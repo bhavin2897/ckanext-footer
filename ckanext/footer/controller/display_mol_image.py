@@ -83,7 +83,7 @@ class FooterController(plugins.SingletonPlugin):
         page = toolkit.request.args.get('page', 1, type=int)
         current_page = page
 
-        page_size = 20
+        page_size = 10
 
         package_list_inchi_key = []
 
@@ -101,7 +101,9 @@ class FooterController(plugins.SingletonPlugin):
 
         cur.execute("SELECT m.inchi_key, a.package_ids FROM (SELECT molecules_id, STRING_AGG(package_id::text, ', ') AS "
                     "package_ids FROM molecule_rel_data GROUP BY molecules_id) a JOIN molecules m ON a.molecules_id = m.id"
-                    " LIMIT %s OFFSET (%s - 1) * %s", (page_size, current_page, page_size))
+                   " LIMIT %s OFFSET (%s - 1) * %s", (page_size, current_page, page_size))
+
+        #cur.execute("SELECT m.inchi_key, mat_view_molecules_list.package_ids as packages_id FROM mat_view_molecules_list JOIN molecules m ON mat_view_molecules_list.molecules_id = m.id LIMIT %s OFFSET (%s - 1) * %s", (page_size,current_page, page_size))
 
         cur2.execute("SELECT COUNT(*) FROM (SELECT DISTINCT ON (molecules_id) package_id FROM molecule_rel_data) AS distinct_rows")
         dataset_id_list = cur.fetchall()
@@ -110,7 +112,7 @@ class FooterController(plugins.SingletonPlugin):
         #type = dataset_id_list.type
 
         #log.debug(f'Molecule ID : {dataset_id_list}')
-        #log.debug(f'package IDs : {dataset_id_list[1]}')
+        log.debug(f'package IDs : {dataset_id_list}')
 
         total_datasets = cur2.fetchone()[0]
 
