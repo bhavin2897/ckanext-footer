@@ -8,12 +8,7 @@
  {{ h.build_nav_main(
 
         ('dataset.search', _('Datasets')),
-)}}
-
-<li>
-            <a href="{{ h.url_for('/molecule_view') }}">{{ _('Molecules') }}</a>
-</li>
-{{ h.build_nav_main(
+        ('footer.molecule_view', _('Molecules')),
         ('home.about', _('About')),
         ('footer.help',_('Help')),
   )
