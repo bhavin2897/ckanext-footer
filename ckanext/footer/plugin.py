@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+from ckanext.related_resources.models.related_resources import RelatedResources as related_resources
+import ckan.logic as logic
+
 from flask import Blueprint, render_template, session
+import asyncio
 from ckanext.footer.controller.display_mol_image import FooterController
 
 import logging
@@ -10,6 +14,8 @@ import json
 from typing import Any, Dict
 
 log = logging.getLogger(__name__)
+get_action = logic.get_action
+
 
 
 def help():
@@ -90,7 +96,10 @@ class FooterPlugin(plugins.SingletonPlugin):
                 'searchbar': FooterController.searchbar,
                 'mol_package_list': FooterController.mol_dataset_list,
                 'package_list_for_every_inchi': FooterController.package_show_dict,
+                'get_molecule_data': FooterController.get_molecule_data,
                 'package_list': FooterPlugin.molecule_view_search, }
+
+
 
     @staticmethod
     def after_search(search_results: dict[str, Any], search_params: dict[str, Any]) -> dict[str, Any]:
@@ -110,3 +119,7 @@ class FooterPlugin(plugins.SingletonPlugin):
         packages_list = session.get('search_results_final', None)
         search_params = session.get('search_params', None)
         return packages_list, search_params
+
+
+
+
