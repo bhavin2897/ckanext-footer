@@ -59,7 +59,7 @@ class FooterController(plugins.SingletonPlugin):
 
         inchi_n = inchi[0][0].replace('["','').replace('"]','')
 
-        log.debug(inchi_n)
+        #log.debug(inchi_n)
         try:
             for x in molecule_formula_list:
                 mol_formula = "['']".join(x)
