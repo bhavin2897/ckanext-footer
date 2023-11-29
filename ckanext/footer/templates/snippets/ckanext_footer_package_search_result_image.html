@@ -4,6 +4,7 @@
 {% set package = package %}
 {% set molecule_formula = molecule_formula %}
 {# {% set IUpacName = IUpacName %} #}
+{% set inchi = inchi %}
 {% set exact_mass = exact_mass %}
 
 {# {% asset 'statictheme/statictheme.css' %} #}
@@ -42,9 +43,6 @@
 
 
 
-
-
-
 <div class="row">
     <div class = "col col-md-5">
          <div>
@@ -61,10 +59,10 @@
             </tr>
             {% endif %}
 
-            {% if package.inchi %}
+            {% if inchi %}
             <tr>
               <th scope="row" class="dataset-label">{{ _("InChI") }}</th>
-              <td class="dataset-details"> {{ package.inchi }}</td>
+              <td class="dataset-details"> {{ inchi }}</td>
             </tr>
             {% endif %}
 

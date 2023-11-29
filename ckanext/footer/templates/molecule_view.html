@@ -55,11 +55,11 @@
 
       {% block package_search_results_list %}
         {% set return_img = h.footer(package_inchiKey = first_inchi_key, page = packages) %}
-        {% set mol_formula,exact_mass = h.get_molecule_data(package_id = package_result[0]['id']) %}
+        {% set mol_formula,exact_mass,inchi = h.get_molecule_data(package_id = package_result[0]['id']) %}
 
         <div>
             {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
-            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass %}
+            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass, inchi=inchi %}
          </div>
 
         {{ h.snippet('snippets/package_list.html', packages= packages.results ) }}
@@ -86,11 +86,11 @@
         {% set return_img = h.footer(package_inchiKey = molecules_id, page = packages) %}
        {# {% set mol_formula, IUpacName = h.get_molecule_data(package_inchiKey = molecules_id) %}#}
 
-        {% set mol_formula,exact_mass = h.get_molecule_data(package_id = packages.split(', ')[0]) %}
+        {% set mol_formula,exact_mass, inchi = h.get_molecule_data(package_id = packages.split(', ')[0]) %}
 
           <div>
               {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
-             package = packages, molecule_formula = mol_formula, exact_mass = exact_mass %}
+             package = packages, molecule_formula = mol_formula, exact_mass = exact_mass,  inchi= inchi %}
          </div>
 
         {% for package in packages.split(', ') %}

@@ -46,15 +46,20 @@ class FooterController(plugins.SingletonPlugin):
 
         return byteimage
 
-
     def get_molecule_data(package_id):
 
         mol_formula = []
-        #exact_mass = []
+        inchi_n = []
+        #package_id_show = package_id
 
         molecule_formula_list = mol_relation_data.get_mol_formula_by_package_id(package_id)
         exact_mass_list = mol_relation_data.get_exact_mass_by_package_id(package_id)
 
+        inchi = mol_relation_data.get_molecule_data_by_package_id(package_id)
+
+        inchi_n = inchi[0][0].replace('["','').replace('"]','')
+
+        log.debug(inchi_n)
         try:
             for x in molecule_formula_list:
                 mol_formula = "['']".join(x)
@@ -64,7 +69,7 @@ class FooterController(plugins.SingletonPlugin):
 
         exact_mass_one = exact_mass_list[0][0]
         exact_mass = '%.3f' % exact_mass_one
-        return mol_formula, exact_mass
+        return mol_formula, exact_mass, inchi_n
 
 
     def searchbar():
