@@ -18,7 +18,7 @@ For every Molecule InChIKey search, the molecule_view gives the User to visualiz
 ****************************************************************
 ## Requirements
 
-CKAN Extensions prerequisites:
+**CKAN Extensions prerequisites:**
 - ckanext-search-tweaks (https://github.com/bhavin2897/ckanext-search-tweaks)
 - ckanext-rdkit-visuals (https://github.com/bhavin2897/ckanext-rdkit-visuals)
 

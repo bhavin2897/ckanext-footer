@@ -9,8 +9,7 @@ from flask import Blueprint, render_template, session
 
 import requests
 import math
-import aiohttp
-import asyncio
+
 
 import logging
 import json
