@@ -3,7 +3,8 @@
 {% set return_value =  return_value %}
 {% set package = package %}
 {% set molecule_formula = molecule_formula %}
-{% set IUpacName = IUpacName %}
+{# {% set IUpacName = IUpacName %} #}
+{% set exact_mass = exact_mass %}
 
 {# {% asset 'statictheme/statictheme.css' %} #}
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/chevron-up.css' rel='stylesheet'>
@@ -39,17 +40,10 @@
         }
     </style>
 
-<script>
-        // JavaScript function to toggle the collapse
-        function toggleCollapse() {
-            var collapsible = document.getElementById("myCollapsible");
-            if (collapsible.style.display === "none" || collapsible.style.display === "") {
-                collapsible.style.display = "block"; // Expand the content
-            } else {
-                collapsible.style.display = "none"; // Collapse the content
-            }
-        }
-    </script>
+
+
+
+
 
 <div class="row">
     <div class = "col col-md-5">
@@ -88,10 +82,10 @@
             </tr>
             {% endif %}
 
-            {% if package.exactmass %}
+            {% if exact_mass %}
             <tr>
               <th scope="row" class="dataset-label">{{ _("Molecular Mass") }}</th>
-              <td class="dataset-details"> {{ package.exactmass}} {{_("g/mol") }} </td>
+              <td class="dataset-details"> {{ exact_mass}} {{_("g/mol") }} </td>
             </tr>
             {% endif %}
 

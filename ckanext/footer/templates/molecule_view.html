@@ -28,12 +28,10 @@
 {% set mol_dataset_list,current_page, total_pages, total_datasets = h.mol_package_list() %}
 
 
-
 {% block primary_content %}
 <section class="module">
-{% if search_params %}
+{% if search_params and first_inchi_key %}
     <div class="module-content">
-<!--        <h1> {{ packages_count }} Dataset(s) found </h1>-->
 
       {% block form %}
         {% set facets = {
@@ -43,7 +41,6 @@
           'translated_fields': translated_fields,
           'remove_field': remove_field }
         %}
-
 
 {# <!--        {% set sorting = [-->
 <!--          (_('Relevance'), 'score desc, metadata_modified desc'),-->
@@ -57,12 +54,14 @@
       {% endblock %}
 
       {% block package_search_results_list %}
-        {% set return_value, mol_formula,IUpacName = h.footer(package_inchiKey = first_inchi_key, page = packages) %}
+        {% set return_img = h.footer(package_inchiKey = first_inchi_key, page = packages) %}
+        {% set mol_formula,exact_mass = h.get_molecule_data(package_id = package_result[0]['id']) %}
 
-    <div>
-      {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_value, imageName = first_inchi_key,
-        package = first_package, molecule_formula = mol_formula, IUpacName = IUpacName %}
-      </div>
+        <div>
+            {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
+            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass %}
+         </div>
+
         {{ h.snippet('snippets/package_list.html', packages= packages.results ) }}
       {% endblock %}
 
@@ -79,37 +78,31 @@
           'remove_field': remove_field }
         %}
 
-
      {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count = total_datasets , placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
     {% endblock %}
 
-     {# molecule with respective datasets view #}
-        {% for molecules_id, packages in mol_dataset_list %}
-        {% set return_value, mol_formula,IUpacName = h.footer(package_inchiKey = molecules_id, page = packages) %}
+     {% for molecules_id, packages in mol_dataset_list %}
 
+        {% set return_img = h.footer(package_inchiKey = molecules_id, page = packages) %}
+       {# {% set mol_formula, IUpacName = h.get_molecule_data(package_inchiKey = molecules_id) %}#}
 
-            {% set package_dict_for_every_inchi = h.package_list_for_every_inchi(package) %}
-         <div>
-             {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_value, imageName = molecules_id,
-             package = package_dict_for_every_inchi, molecule_formula = mol_formula, IUpacName = IUpacName %}
+        {% set mol_formula,exact_mass = h.get_molecule_data(package_id = packages.split(', ')[0]) %}
+
+          <div>
+              {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
+             package = packages, molecule_formula = mol_formula, exact_mass = exact_mass %}
          </div>
 
-            {% for package in packages.split(', ') %}
-            {% set package_dict_for_every_inchi = h.package_list_for_every_inchi(package) %}
-
-            <div>
-                <ul>
-                <li>
-                {{ h.snippet('snippets/package_list.html', packages = package_dict_for_every_inchi ) }}
-                <br>
-                </li>
-                    </ul>
-            </div>
-
-            {% endfor %}
-            <hr style = "height:1px;border-width:0;color:gray;background-color:black">
+        {% for package in packages.split(', ') %}
+                    {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = package  %}
         {% endfor %}
 
+        {% set package_dict_for_every_inchi = h.package_list_for_every_inchi(package) %}
+
+        <hr style = "height:1px;border-width:0;color:gray;background-color:black">
+
+     {% endfor %}
+    
 
     <div class="pagination-wrapper">
     <ul class="pagination">
