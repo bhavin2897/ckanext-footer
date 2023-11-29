@@ -2,13 +2,25 @@
 
 # ckanext-footer
 
-**TODO:** Put a description of your extension here:  What does it do? What features does it have? Consider including some screenshots or embedding a video!
+Extension for following Static page and views on Frontend for NFDI4Chem Search Service
+1. Footer Info
+2. Header Page and Page navigation 
+3. Help Page 
+4. About Page
+5. Molecule View Page 
+6. Imprint and Datenschutz 
 
 
+The Extension mostly provides functionality for designing the Molecule_View CKAN template page.
+Molecule_View displays Datasets and image for every Molecule present in the Search Service.  
+
+For every Molecule InChIKey search, the molecule_view gives the User to visualize image and their dataset. 
+****************************************************************
 ## Requirements
 
-**TODO:** For example, you might want to mention here which versions of CKAN this
-extension works with.
+CKAN Extensions prerequisites:
+- ckanext-search-tweaks (https://github.com/bhavin2897/ckanext-search-tweaks)
+- ckanext-rdkit-visuals (https://github.com/bhavin2897/ckanext-rdkit-visuals)
 
 If your extension works across different versions you can add the following table:
 
@@ -16,24 +28,13 @@ Compatibility with core CKAN versions:
 
 | CKAN version    | Compatible?   |
 | --------------- | ------------- |
-| 2.6 and earlier | not tested    |
-| 2.7             | not tested    |
 | 2.8             | not tested    |
-| 2.9             | not tested    |
+| 2.9             | Yes    |
 
-Suggested values:
-
-* "yes"
-* "not tested" - I can't think of a reason why it wouldn't work
-* "not yet" - there is an intention to get it working
-* "no"
+********************************
 
 
 ## Installation
-
-**TODO:** Add any additional install steps to the list below.
-   For example installing any non-Python dependencies or adding any required
-   config settings.
 
 To install ckanext-footer:
 
@@ -60,13 +61,6 @@ To install ckanext-footer:
 ## Config settings
 
 None at present
-
-**TODO:** Document any optional config settings here. For example:
-
-	# The minimum number of hours to wait before re-checking a resource
-	# (optional, default: 24).
-	ckanext.footer.some_setting = some_default_value
-
 
 ## Developer installation
 
