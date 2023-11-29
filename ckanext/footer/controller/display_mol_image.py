@@ -77,7 +77,7 @@ class FooterController(plugins.SingletonPlugin):
     def mol_dataset_list():
         page = toolkit.request.args.get('page', 1, type=int)
         current_page = page
-        page_size = 20
+        page_size = 10
 
         package_list_inchi_key = mol_relation_data.get_package_list_inchi_key(page_size, current_page)
 
