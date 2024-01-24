@@ -72,13 +72,14 @@ class FooterController(plugins.SingletonPlugin):
         try:
             for x in molecule_formula_list:
                 mol_formula = "['']".join(x)
+                exact_mass_one = exact_mass_list[0][0]
+                exact_mass = '%.3f' % exact_mass_one
+                return mol_formula, exact_mass, inchi_n
 
         except TypeError:
-            pass
+            return None, None,None
 
-        exact_mass_one = exact_mass_list[0][0]
-        exact_mass = '%.3f' % exact_mass_one
-        return mol_formula, exact_mass, inchi_n
+
 
 
     def searchbar():
