@@ -66,6 +66,8 @@
       {% endblock %}
 
     </div>
+
+
 {% elif not first_inchi_key.startswith('Short-RInChIKey') %}
  <div class="module-content ">
 
@@ -131,7 +133,8 @@
 </div>
 
  </div>
-    {% else %}
+
+{% else %}
     <div class="module-content ">
 
      {% block form_search %}
