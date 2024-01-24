@@ -81,7 +81,7 @@
 
         {% set mol_formula,exact_mass, inchi = h.get_molecule_data(package_id = packages.split(', ')[0]) %}
 
-        {% if not inchi.startswith('Short')%}
+        {% if inchi not inchi.startswith('Short')%}
               <div>
                   {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
                  package = packages, molecule_formula = mol_formula, exact_mass = exact_mass,  inchi = inchi %}
