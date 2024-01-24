@@ -32,19 +32,28 @@ class FooterController(plugins.SingletonPlugin):
 
         inchi_key = package_inchiKey
 
-        filepath = '/var/lib/ckan/default/storage/images/' + str(inchi_key) + '.png'
-        file = open(filepath, 'rb').read()
-        image = Image.open(io.BytesIO(file))
-        output = io.BytesIO()
-        image.save(output, 'PNG')
-        output.seek(0)
-        byteimage = base64.b64encode(output.getvalue()).decode()
+        try:
+            if inchi_key:
 
-        # Store byteimage in the session
-        session['byteimage'] = byteimage
-        session['page'] = page
+                filepath = '/var/lib/ckan/default/storage/images/' + str(inchi_key) + '.png'
+                file = open(filepath, 'rb').read()
+                image = Image.open(io.BytesIO(file))
+                output = io.BytesIO()
+                image.save(output, 'PNG')
+                output.seek(0)
+                byteimage = base64.b64encode(output.getvalue()).decode()
 
-        return byteimage
+                # Store byteimage in the session
+                session['byteimage'] = byteimage
+                session['page'] = page
+
+                return byteimage
+
+            else:
+                return 0
+
+        except Exception as e:
+            log.debug(f"Error in display_search_mol_image {e}")
 
     def get_molecule_data(package_id):
 
