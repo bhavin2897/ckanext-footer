@@ -38,7 +38,19 @@ class FooterPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IPackageController, inherit=True)
+
+
+# Facet plugin
+    def dataset_facets(self,facets_dict,package_type):
+        facets_dict = {
+            'organization': 'Repository',
+            'measurement_technique': 'Measurement Technique',
+            'res_format':'Formats',
+            'license_id': 'Licenses',
+        }
+        return facets_dict
 
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
