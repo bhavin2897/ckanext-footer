@@ -1,8 +1,11 @@
-{% extends "page.html" %}
+{% extends 'page.html' %}
 {% import 'macros/form.html' as form %}
 {% import 'macros/form.html' as form_search %}
+
 {% set dataset_type = 'molecule_view' %}
+{% set facet_list = h.get_facet_field_list() %}
 {% set packages,search_params = h.package_list()  %}
+
 
 {% set package_result = packages.results %}
 {% if package_result|length != 0 %}
@@ -15,9 +18,13 @@
     {% endif %}
 {% endfor %}
 
-{% set facet_titles = {'organization' : 'Repository',
-                'license_id': 'Licenses'}
+
+{% set facet_titles =  {
+                        'organization' : 'Repository',
+                        'measurement_technique':'Measurement Technique',
+                        'license_id': 'Licenses'}
 %}
+
 
 {% set packages_count = packages.count %}
 {% set search_facets = packages.search_facets %}
@@ -62,11 +69,11 @@
 
      {% block form_search %}
         {% set facets = {
-          'fields': fields_grouped,
-          'search': search_facets,
-          'titles': facet_titles,
-          'translated_fields': translated_fields,
-          'remove_field': remove_field }
+          'fields': c.fields_grouped,
+          'search': c.search_facets,
+          'titles': c.facet_titles,
+          'translated_fields': c.translated_fields,
+          'remove_field': c.remove_field }
         %}
 
         {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count = total_datasets , placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
@@ -89,7 +96,7 @@
                         {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = package  %}
             {% endfor %}
 
-            {% set package_dict_for_every_inchi = h.package_list_for_every_inchi(package) %}
+           {# {% set package_dict_for_every_inchi,facet_list = h.package_list_for_every_inchi(package) %}#}
 
             <hr style = "height:1px;border-width:0;color:gray;background-color:black">
         {% endif %}
@@ -135,10 +142,21 @@
 
 <div class="filters">
     <div>
+        {# <p> {{ search_facets }}</p> #}
       {% for facet in facet_titles %}
-        {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
+        {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet,
+        search_facets = search_facets) }}
       {% endfor %}
     </div>
     <a class="close no-text hide-filters"><i class="fa fa-times-circle"></i><span class="text">close</span></a>
-  </div>
+</div>
+{% endblock %}
+
+
+{% block styles %}
+    {{ super() }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
 {% endblock %}
