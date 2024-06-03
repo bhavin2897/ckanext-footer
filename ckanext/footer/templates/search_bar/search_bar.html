@@ -20,7 +20,7 @@
 
       {% block form %}
         <form class="module-content search-form" method="get" action="{% url_for 'dataset.search' %}">
-        {% include 'snippets/ckanext_footer_search_form.html', form_id='dataset-search-form', type='dataset', query=q, sorting=sorting, sorting_selected=sort_by_selected, placeholder= '...', facets=facets, show_empty=request.params, error=query_error, fields=fields, count=page.item_count %}
+        {% snippet 'snippets/ckanext_footer_search_form.html', form_id='dataset-search-form', type='dataset', query=q, sorting=sorting, sorting_selected=sort_by_selected, placeholder= '...', facets=facets, show_empty=request.params, error=query_error, fields=fields, count=page.item_count %}
             </form>
       {% endblock %}
 
