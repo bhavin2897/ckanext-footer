@@ -46,7 +46,7 @@
           'translated_fields': translated_fields,
           'remove_field': remove_field }
         %}
-        {% include 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
+        {% include 'snippets/search_form.html' with form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=( _('Search ') + dataset_type + 's' ) + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
       {% endblock %}
 
       {% block package_search_results_list %}
