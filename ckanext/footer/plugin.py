@@ -101,7 +101,8 @@ class FooterPlugin(plugins.SingletonPlugin):
                 'package_list_for_every_inchi': FooterController.package_show_dict,
                 'get_molecule_data': FooterController.get_molecule_data,
                 'package_list': FooterPlugin.molecule_view_search,
-                'get_facet_field_list': FooterController.get_facet_field_list}
+                'get_facet_field_list':FooterController.get_facet_field_list_sent,
+               }
 
 
     @staticmethod
@@ -123,7 +124,6 @@ class FooterPlugin(plugins.SingletonPlugin):
 
         session['search_results_final'] = search_results
         session['search_params'] = search_params_result
-
 
         return search_results
 
