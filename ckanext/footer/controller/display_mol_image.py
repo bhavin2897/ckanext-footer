@@ -21,6 +21,25 @@ import base64
 log = logging.getLogger(__name__)
 
 
+
+def get_facet_field_list(package_ids):
+
+    package_to_facet = [row[1] for row in package_ids]
+
+    fq = " OR ".join(f"id:{pkg_id}" for pkg_id in package_to_facet)
+
+    log.debug(fq)
+
+    facets_per_dataset = toolkit.get_action('package_search')({},
+                                                              {'fq': '196793-29-0-dept416', 'facet.field': ['tags', 'organization',
+                                                                                                 'measurement_technique',
+                                                                                                 'license_id'],
+                                                               'facet': True,
+                                                               'rows': 0})
+
+    return facets_per_dataset
+
+
 class FooterController(plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
 
@@ -99,7 +118,7 @@ class FooterController(plugins.SingletonPlugin):
         page = session.get('page', None)
 
         return render_template('search_bar/search_bar.html', bytename=byte_image, page=page, )
-
+    @staticmethod
     def mol_dataset_list():
         """
         Gets the numbers of the page, and sends to the 'get_package_list' alembic method,
@@ -113,6 +132,10 @@ class FooterController(plugins.SingletonPlugin):
         page_size = 10
 
         package_list_inchi_key = mol_relation_data.get_package_list_inchi_key(page_size, current_page)
+
+        if package_list_inchi_key:
+            facet_field_list = get_facet_field_list(package_list_inchi_key)
+            session['facet_field_list_final'] = facet_field_list
 
         total_datasets = mol_relation_data.get_count_rows()
         total_pages = math.ceil(total_datasets / page_size)
@@ -142,18 +165,13 @@ class FooterController(plugins.SingletonPlugin):
         return package_list_for_every_inchi
 
 
-    def get_facet_field_list():
+    def get_facet_field_list_sent():
         """
         Get all Facets Field in PackageSearch all!!
 
         :return:
         """
 
-        facet_field_list = []
-        facets_per_dataset = toolkit.get_action('package_search')({}, {'fq': '', 'facet.field': ['tags', 'organization',
-                                                                                                 'measurement_technique',
-                                                                                                 'license_id']})
-
-        facet_field_list.append(facets_per_dataset)
-
-        return facet_field_list
+        facets_list = session.get('facet_field_list_final', None)
+        log.debug(facets_list)
+        return facets_list
