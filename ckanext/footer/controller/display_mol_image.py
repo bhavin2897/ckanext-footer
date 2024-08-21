@@ -6,7 +6,7 @@ import ckan.model as model
 from ckanext.rdkit_visuals.models.molecule_rel import MolecularRelationData as mol_relation_data
 
 from flask import Blueprint, render_template, session
-from ckanext.footer.controller.search_controller import SearchMoleculeController
+
 import requests
 import math
 
@@ -21,38 +21,12 @@ import base64
 log = logging.getLogger(__name__)
 
 
-
-def get_facet_field_list(package_ids):
-
-    package_to_facet = [row[1] for row in package_ids]
-
-    fq = " OR ".join(f"id:{pkg_id}" for pkg_id in package_to_facet)
-
-    log.debug(fq)
-
-    facets_per_dataset = toolkit.get_action('package_search')({},
-                                                              {'fq': '196793-29-0-dept416', 'facet.field': ['tags', 'organization',
-                                                                                                 'measurement_technique',
-                                                                                                 'license_id'],
-                                                               'facet': True,
-                                                               'rows': 0})
-
-    return facets_per_dataset
-
-
 class FooterController(plugins.SingletonPlugin):
     plugins.implements(plugins.IPackageController, inherit=True)
 
     @staticmethod
     def display_search_mol_image(package_inchiKey, page):
-        """
-        Function to generate image in bytes code, which is later converted to an image, using the packageID
-        Similar to the RDKit Visuals extension!!
-
-        :param package_inchiKey: Receives InChIKey from the HTML which is an advanced Search & an exact Match
-        :param page: page number we are in(starting from 0)
-        :return: Either returns image in the format of bytecode or NONE
-        """
+        log.debug(package_inchiKey)
 
         inchi_key = package_inchiKey
 
@@ -80,12 +54,6 @@ class FooterController(plugins.SingletonPlugin):
             log.debug(f"Error in display_search_mol_image {e}")
 
     def get_molecule_data(package_id):
-        """
-        generates molecular data, that is displayed besides the molecule image, for the particular molecule
-
-        :param package_id: receives package id from
-        :return: molecule formal, exact mass and inchi are returned to display beside the image
-        """
 
         mol_formula = []
         inchi_n = []
@@ -110,32 +78,17 @@ class FooterController(plugins.SingletonPlugin):
             return None, None, None
 
     def searchbar():
-        """
-        to render data to HTML using flask blueprint
-        :return: render_template of Flask.blueprint
-        """
         byte_image = session.get('byteimage', None)
         page = session.get('page', None)
 
         return render_template('search_bar/search_bar.html', bytename=byte_image, page=page, )
-    @staticmethod
-    def mol_dataset_list():
-        """
-        Gets the numbers of the page, and sends to the 'get_package_list' alembic method,
-        to return the list of InChIKey & packageID pair
 
-        :return: list of packages paired [InChIKey, packageID], along with 'current page', 'total pages' and
-        'total datasets'.
-        """
+    def mol_dataset_list():
         page = toolkit.request.args.get('page', 1, type=int)
         current_page = page
         page_size = 10
 
         package_list_inchi_key = mol_relation_data.get_package_list_inchi_key(page_size, current_page)
-
-        if package_list_inchi_key:
-            facet_field_list = get_facet_field_list(package_list_inchi_key)
-            session['facet_field_list_final'] = facet_field_list
 
         total_datasets = mol_relation_data.get_count_rows()
         total_pages = math.ceil(total_datasets / page_size)
@@ -143,14 +96,8 @@ class FooterController(plugins.SingletonPlugin):
         return package_list_inchi_key, current_page, total_pages, total_datasets
 
     def package_show_dict(package_ids):
-        """
-        List of all packages/datasets
-        :return:
-        """
 
         package_list_for_every_inchi = []
-        facet_field_list = []
-
         try:
             if package_ids:
                 package_ids_list = [package_ids]
@@ -158,20 +105,8 @@ class FooterController(plugins.SingletonPlugin):
                 for package_id in package_ids_list:
                     package = toolkit.get_action('package_show')({}, {'name_or_id': package_id})
                     package_list_for_every_inchi.append(package)
-
+                    # log.debug(f'{package_list_for_every_inchi}')
         except Exception as e:
-            log.exception(e)
+            log.debug(e)
 
         return package_list_for_every_inchi
-
-
-    def get_facet_field_list_sent():
-        """
-        Get all Facets Field in PackageSearch all!!
-
-        :return:
-        """
-
-        facets_list = session.get('facet_field_list_final', None)
-        log.debug(facets_list)
-        return facets_list

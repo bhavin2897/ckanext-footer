@@ -1,11 +1,8 @@
-{% extends 'page.html' %}
+{% extends "page.html" %}
 {% import 'macros/form.html' as form %}
 {% import 'macros/form.html' as form_search %}
-
 {% set dataset_type = 'molecule_view' %}
-{% set facet_list = h.get_facet_field_list() %}
 {% set packages,search_params = h.package_list()  %}
-
 
 {% set package_result = packages.results %}
 {% if package_result|length != 0 %}
@@ -18,16 +15,14 @@
     {% endif %}
 {% endfor %}
 
-
-{% set facet_titles =  {
-                        'organization' : 'Repository',
-                        'measurement_technique':'Measurement Technique',
-                        'license_id': 'Licenses'}
+{% set facet_titles = {'organization' : 'Repository',
+                'tags': 'Tags',
+                'res_format': 'Formats',
+                'license_id': 'Licenses'}
 %}
 
-
 {% set packages_count = packages.count %}
-{% set search_facets = facet_list.search_facets %}
+{% set search_facets = packages.search_facets %}
 {% set first_package = package_result[0] %}
 {% set current_page_number = url_for(request.endpoint) %}
 {% set mol_dataset_list,current_page, total_pages, total_datasets = h.mol_package_list() %}
@@ -46,7 +41,7 @@
           'translated_fields': translated_fields,
           'remove_field': remove_field }
         %}
-        {{ h.snippet ('snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields) }}
+        {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count=packages.item_count, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
       {% endblock %}
 
       {% block package_search_results_list %}
@@ -54,8 +49,8 @@
         {% set mol_formula,exact_mass,inchi = h.get_molecule_data(package_id = package_result[0]['id']) %}
 
         <div>
-            {{  h.snippet('snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
-            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass, inchi=inchi) }}
+            {% snippet 'snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
+            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass, inchi=inchi %}
          </div>
 
         {{ h.snippet('snippets/package_list.html', packages= packages.results ) }}
@@ -76,7 +71,7 @@
           'remove_field': remove_field }
         %}
 
-        {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count = total_datasets, placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
+        {% snippet 'snippets/search_form.html', form_id='dataset-search-form', type=dataset_type, query=q, sorting=sorting, sorting_selected=sort_by_selected, count = total_datasets , placeholder=_('Search ' + dataset_type + 's') + '...', facets=facets, show_empty=request.params, error=query_error, fields=fields %}
     {% endblock %}
 
      {% for molecules_id, packages in mol_dataset_list %}
@@ -95,6 +90,8 @@
             {% for package in packages.split(', ') %}
                         {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = package  %}
             {% endfor %}
+
+            {% set package_dict_for_every_inchi = h.package_list_for_every_inchi(package) %}
 
             <hr style = "height:1px;border-width:0;color:gray;background-color:black">
         {% endif %}
@@ -137,23 +134,13 @@
 
 
 {% block secondary_content %}
+
 <div class="filters">
     <div>
-        <p>{{ facet_list }} </p>
       {% for facet in facet_titles %}
-            {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet,
-        search_facets = search_facets) }}
+        {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
       {% endfor %}
     </div>
     <a class="close no-text hide-filters"><i class="fa fa-times-circle"></i><span class="text">close</span></a>
-</div>
-{% endblock %}
-
-
-{% block styles %}
-    {{ super() }}
-{% endblock %}
-
-{% block scripts %}
-    {{ super() }}
+  </div>
 {% endblock %}
