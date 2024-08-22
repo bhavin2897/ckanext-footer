@@ -19,18 +19,6 @@ log = logging.getLogger(__name__)
 get_action = logic.get_action
 
 
-def help():
-    return render_template('help.html')
-
-
-def imprint():
-    return render_template('imprint.html')
-
-
-def dataprotection():
-    return render_template('data_protection.html')
-
-
 def molecule_view():
     return render_template('molecule_view/molecule_view.html')
 
@@ -50,32 +38,13 @@ class FooterPlugin(plugins.SingletonPlugin):
 
     def get_blueprint(self):
         blueprint = Blueprint(self.name, self.__module__)
-        blueprint.add_url_rule(
-            u'/help',
-            u'help',
-            help,
-            methods=['GET']
-        )
+
 
         blueprint.add_url_rule(
             u'/molecule_view',
             u'molecule_view',
             molecule_view,
             methods=['GET', 'POST']
-        )
-
-        blueprint.add_url_rule(
-            u'/imprint',
-            u'imprint',
-            imprint,
-            methods=['GET']
-        )
-
-        blueprint.add_url_rule(
-            u'/data_protection',
-            u'data_protection',
-            dataprotection,
-            methods=['GET']
         )
 
         blueprint.add_url_rule(
