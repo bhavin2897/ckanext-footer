@@ -30,4 +30,4 @@ class SearchMoleculeController(plugins.SingletonPlugin):
 
 
     def dataset_search(self):
-        return toolkit.render('dataset/search.html')
+        return toolkit.render('package/search.html')
