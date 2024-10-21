@@ -95,6 +95,7 @@ class FooterController:
         per_page = 10  # Customize as needed
 
         if not search_query:
+            log.debug("No search query provided.")
             return redirect(url_for('footer.molecule_view'))
 
         # Determine if the search query is an InChI Key
@@ -190,12 +191,14 @@ class FooterController:
             total = search_params.get('total', 0)
 
             return render_template('molecule_view/molecule_view.html',
-                #molecules=molecules,
+                molecules=molecules,
                 search_query=search_query,
                 search_type=search_type,
                 page=page,
                 per_page=per_page,
-                total=total
+                total=total,
+
+
             )
         else:
             # If no search has been performed, display the default view
@@ -228,14 +231,16 @@ class FooterController:
         Retrieves detailed information for a list of package IDs.
         """
         package_list_for_every_inchi = []
-        log.debug(package_ids)
+
         try:
             if package_ids:
                 package_ids_list = [package_ids]
 
                 for package_id in package_ids_list:
                     package = toolkit.get_action('package_show')({}, {'name_or_id': package_id})
+
                     package_list_for_every_inchi.append(package)
+                    log.debug(f"package_type: {package.get('type')}")
         except Exception as e:
             log.exception(f"Error in package_show_dict: {str(e)}")
 
