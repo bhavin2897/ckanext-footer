@@ -131,6 +131,7 @@ class FooterController:
         try:
             molecules = FooterController.search_autocomplete_molecules(term)
             return json.dumps(molecules['results'])
+
         except Exception as e:
             log.exception("Autocomplete failed.")
             return json.dumps([])
@@ -183,26 +184,34 @@ class FooterController:
         search_params = session.get('search_params', None)
 
         if search_results and search_params:
-            molecules = search_results.get('results', [])
+            packages = search_results.get('results', [])
             search_query = search_params.get('search_query', '')
             search_type = search_params.get('search_type', '')
+            log.debug(f"SEARCH TYPE {search_type}")
             page = search_params.get('page', 1)
             per_page = search_params.get('per_page', 10)
             total = search_params.get('total', 0)
 
+            log.debug(molecules,
+                search_query,
+                search_type,
+                page,
+                per_page,
+                total)
+
             return render_template('molecule_view/molecule_view.html',
-                molecules=molecules,
+                packages=packages,
                 search_query=search_query,
                 search_type=search_type,
                 page=page,
                 per_page=per_page,
                 total=total,
 
-
             )
         else:
             # If no search has been performed, display the default view
             package_list_inchi_key, current_page, total_pages, total_datasets = FooterController.mol_dataset_list()
+            log.debug(package_list_inchi_key, current_page, total_pages, total_datasets)
             return render_template('molecule_view/molecule_view.html',
                 mol_dataset_list=package_list_inchi_key,
                 current_page=current_page,
@@ -240,7 +249,7 @@ class FooterController:
                     package = toolkit.get_action('package_show')({}, {'name_or_id': package_id})
 
                     package_list_for_every_inchi.append(package)
-                    log.debug(f"package_type: {package.get('type')}")
+
         except Exception as e:
             log.exception(f"Error in package_show_dict: {str(e)}")
 
@@ -313,6 +322,7 @@ class FooterController:
             ]
 
             # Return serialized results and total count
+            log.debug(f"Serialized results: {serialized}")
             return {'results': serialized, 'total': total}
 
         # Handle the case where q_inchi_key is not provided
