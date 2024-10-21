@@ -192,7 +192,7 @@ class FooterController:
             per_page = search_params.get('per_page', 10)
             total = search_params.get('total', 0)
 
-            log.debug(molecules,
+            log.debug(packages,
                 search_query,
                 search_type,
                 page,
