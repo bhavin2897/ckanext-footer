@@ -1,9 +1,9 @@
 
-{% set imageName = imageName %}
+{% set final_value = inchi_key if inchi_key else imageName %}
 {% set return_value =  return_value %}
 {% set package = package %}
 {% set molecule_formula = molecule_formula %}
-{# {% set IUpacName = IUpacName %} #}
+{% set IUpacName = iupac_name %}
 {% set inchi = inchi %}
 {% set exact_mass = exact_mass %}
 
@@ -70,7 +70,7 @@
             {% if imageName %}
             <tr>
               <th scope="row" class="dataset-label">{{ _("InChIKey") }}</th>
-              <td class="dataset-details"> {{ imageName }}</td>
+              <td class="dataset-details"> {{ final_value }}</td>
             </tr>
             {% endif %}
 

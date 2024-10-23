@@ -1,6 +1,6 @@
 {# ckanext/footer/templates/footer/molecule_search_bar.html #}
 {% import 'macros/form.html' as form %}
-
+{% set type = 'molecule_view' %}
 {% set placeholder = "Search Molecules (InChI Key or IUPAC Name)" %}
 {% set sorting = [(_('Name Ascending'), 'name asc'), (_('Name Descending'), 'name desc')] %}
 {% set search_class = 'search-giant' %}
@@ -8,7 +8,7 @@
 {% set form_id = 'molecule-search-form' %}
 {# {% set endpoint = molecule_search %} #}
 
-<form id="{{ form_id }}" class="search-form{% if no_bottom_border %} no-bottom-border{% endif %}" action="{{ h.url_for('footer.moleculesearch') }}" method="get" role="search" aria-label="{{ placeholder }}" data-module="select-switch">
+<form id="{{ form_id }}" class="search-form{% if no_bottom_border %} no-bottom-border{% endif %}" action="{{ h.url_for('footer.molecule_view_self') }}" method="get" role="search" aria-label="{{ placeholder }}" data-module="select-switch">
 
     {% block search_input %}
         <div class="input-group search-input-group">
@@ -28,6 +28,14 @@
             <span>{{ form.hidden_from_list(fields=fields) }}</span>
         {%- endif %}
     {% endblock %}
+
+    {% block search_title %}
+    {% if not error %}
+      <h1>{% snippet 'snippets/search_result_text.html', query=query, count=count, type=type %}</h1>
+    {% else %}
+      <h2>Error</h2>
+    {% endif %}
+  {% endblock %}
 
     {% block search_sortby %}
         {% if sorting %}
@@ -53,7 +61,7 @@
             $("#field-molecule-search").autocomplete({
                 source: function(request, response) {
                     $.ajax({
-                        url: "{{ h.url_for('footer.moleculeauto') }}",
+                        url: "{{ h.url_for('footer.molecule_view_self') }}",
                         dataType: "json",
                         data: {
                             term: request.term
