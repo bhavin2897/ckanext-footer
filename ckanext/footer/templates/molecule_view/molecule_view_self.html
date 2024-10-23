@@ -1,0 +1,112 @@
+{% extends 'page.html' %}
+
+{% block primary_content %}
+<section class="module">
+    <div class="module-content">
+        {% set search_query = search_query %}
+
+        {% snippet 'snippets/ckanext_footer_molecule_search_bar.html' %}
+
+        <h2>Molecule Search Results for: {{ search_query }}</h2>
+
+
+        {% set mol_dataset_list = packages.results %}
+
+        {% set inchi_keys_processed = [] %}  {# Track processed InChI keys #}
+
+        {% if mol_dataset_list %}
+
+            {% for package in mol_dataset_list %}
+
+                {# Retrieve molecule-specific information #}
+                {% set inchi_key = package.inchi_key %}
+                {% set mol_formula = package.mol_formula %}
+                {% set exact_mass = package.exactmass %}
+                {% set inchi = package.inchi %}
+                {% set iupac_name = package.iupac_name %}
+                {% set molecules_id = package.id %}
+
+                {# Only process if the InChI key hasn't been processed yet #}
+                {% if inchi_key not in inchi_keys_processed %}
+                    {# Add this InChI key to the processed list #}
+                    {% set inchi_keys_processed = inchi_keys_processed + [inchi_key] %}
+
+                    {# Retrieve the image for this molecule #}
+                    {% set return_img = h.footer(package_inchiKey=inchi_key, page=package) %}
+
+                    {# Check if InChI exists and does not start with "Short" #}
+                    {% if inchi and not inchi.startswith('Short') %}
+                        <div>
+                            <h3>Name: {{ iupac_name }}</h3>
+
+
+                            {# Render molecule image and information #}
+                            {{ h.snippet('snippets/ckanext_footer_package_search_result_image.html',
+                                         return_value=return_img,
+                                         imageName=inchi_key,
+                                         package=package,
+                                         molecule_formula=mol_formula,
+                                         exact_mass=exact_mass,
+                                         inchi=inchi,
+                                        iupac_name = iupac_name ) }}
+                        </div>
+
+                        {# Loop through all datasets with the same InChI key and display their resources #}
+                        <div>
+                            <h4>Related Datasets for InChI Key: {{ inchi_key }}</h4>
+
+                                {% for related_package in mol_dataset_list if related_package.inchi_key == inchi_key %}
+                                        {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = related_package.id  %}
+                                {% endfor %}
+
+                        </div>
+
+                        <hr style="height:1px; border-width:0; color:gray; background-color:black">
+
+                    {% else %}
+                    <div>
+                            {# Render molecule image and information #}
+                            {{ h.snippet('snippets/ckanext_footer_package_search_result_image.html',
+                                         return_value=return_img,
+                                         imageName=inchi_key,
+                                         package=package,
+                                         molecule_formula=mol_formula,
+                                         exact_mass=exact_mass,
+                                         inchi=inchi, iupac_name=iupac_name) }}
+                        </div>
+
+                        {# Loop through all datasets with the same InChI key and display their resources #}
+                        <div>
+                            <h4>Related Datasets for InChI Key: {{ inchi_key }}</h4>
+
+                                {% for related_package in mol_dataset_list if related_package.inchi_key == inchi_key %}
+                                        {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = related_package.id  %}
+                                {% endfor %}
+
+                        </div>
+
+                        <hr style="height:1px; border-width:0; color:gray; background-color:black">
+                    {% endif %}
+                {% endif %}
+
+            {% endfor %}
+        {% else %}
+            <h2>No molecules found for {{ search_query }}</h2>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block secondary_content %}
+<div class="filters">
+    <div>
+
+      {% for facet in facet_titles %}
+            {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet,
+        search_facets = search_facets) }}
+      {% endfor %}
+    </div>
+    <a class="close no-text hide-filters"><i class="fa fa-times-circle"></i><span class="text">close</span></a>
+</div>
+{% endblock %}
+
