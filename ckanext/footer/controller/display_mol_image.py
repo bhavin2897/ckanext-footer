@@ -536,7 +536,7 @@ class FooterController(plugins.SingletonPlugin):
             if total == 0:
                 results, total = FooterController.search_by_inchi(search_query, page, per_page)
             if total == 0:
-                results, total = FooterController.search_by_alternate_name(search_query)
+                results, total = FooterController.search_by_alternate_name(search_query, page, per_page)
 
 
         if total > 0:

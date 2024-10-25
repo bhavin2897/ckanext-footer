@@ -35,8 +35,6 @@
                     {# Check if InChI exists and does not start with "Short" #}
                     {% if inchi and not inchi.startswith('Short') %}
                         <div>
-                            <h3>Name: {{ iupac_name }}</h3>
-
 
                             {# Render molecule image and information #}
                             {{ h.snippet('snippets/ckanext_footer_package_search_result_image.html',
