@@ -102,7 +102,7 @@ class FooterPlugin(plugins.SingletonPlugin):
         session['search_results_final'] = search_results
         session['search_params'] = search_params_result
         session.save()
-        log.debug("THESE ARE THE RESULTS:%s" %search_results)
+        #log.debug("THESE ARE THE RESULTS:%s" %search_results)
 
         return search_results
 

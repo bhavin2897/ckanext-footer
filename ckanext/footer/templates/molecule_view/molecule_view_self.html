@@ -7,14 +7,12 @@
 
         {% snippet 'snippets/ckanext_footer_molecule_search_bar.html' %}
 
-        <h2>Molecule Search Results for: {{ search_query }}</h2>
-
-
         {% set mol_dataset_list = packages.results %}
 
         {% set inchi_keys_processed = [] %}  {# Track processed InChI keys #}
 
         {% if mol_dataset_list %}
+        <h2>{{ total }} datasets found for " {{ search_query }} "</h2>
 
             {% for package in mol_dataset_list %}
 
@@ -37,9 +35,6 @@
                     {# Check if InChI exists and does not start with "Short" #}
                     {% if inchi and not inchi.startswith('Short') %}
                         <div>
-                            <h3>Name: {{ iupac_name }}</h3>
-
-
                             {# Render molecule image and information #}
                             {{ h.snippet('snippets/ckanext_footer_package_search_result_image.html',
                                          return_value=return_img,
@@ -53,11 +48,18 @@
 
                         {# Loop through all datasets with the same InChI key and display their resources #}
                         <div>
-                            <h4>Related Datasets for InChI Key: {{ inchi_key }}</h4>
+                            {% set inchi_key_seen = [] %}  {# Track processed inchi_keys #}
+                                {% for related_package in mol_dataset_list %}
+                                {# Check if the inchi_key has already been processed #}
+                                    {% if related_package.inchi_key not in inchi_key_seen %}
 
-                                {% for related_package in mol_dataset_list if related_package.inchi_key == inchi_key %}
-                                        {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = related_package.id  %}
-                                {% endfor %}
+                                        {# Render snippet for the current package #}
+                                {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = related_package.package_id %}
+
+                                {# Add this inchi_key to the seen list to skip duplicates #}
+                                        {% set inchi_key_seen = inchi_key_seen + [related_package.inchi_key] %}
+                                        {% endif %}
+                            {% endfor %}
 
                         </div>
 
@@ -91,7 +93,8 @@
 
             {% endfor %}
         {% else %}
-            <h2>No molecules found for {{ search_query }}</h2>
+
+            <h2>No molecules found for " {{ search_query }} "</h2>
         {% endif %}
     </div>
 </section>

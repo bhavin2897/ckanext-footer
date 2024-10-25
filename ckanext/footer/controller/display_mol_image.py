@@ -438,7 +438,7 @@ class FooterController(plugins.SingletonPlugin):
         molecule_formula_list = mol_relation_data.get_mol_formula_by_package_id(package_id)
         exact_mass_list = mol_relation_data.get_exact_mass_by_package_id(package_id)
 
-        inchi,iupac_name = mol_relation_data.get_molecule_data_by_package_id(package_id)
+        inchi,iupac_name,molecule_name = mol_relation_data.get_molecule_data_by_package_id(package_id)
 
         inchi_n = inchi[0][0].replace('["', '').replace('"]', '')
 
@@ -448,10 +448,10 @@ class FooterController(plugins.SingletonPlugin):
                 mol_formula = "['']".join(x)
                 exact_mass_one = exact_mass_list[0][0]
                 exact_mass = '%.3f' % exact_mass_one
-                return mol_formula, exact_mass, inchi_n,iupac_name[0][0]
+                return mol_formula, exact_mass, inchi_n,iupac_name[0][0], molecule_name[0][0]
 
         except TypeError:
-            return None, None, None
+            return None, None, None, None, None
 
     def searchbar():
         """
@@ -495,7 +495,7 @@ class FooterController(plugins.SingletonPlugin):
 
         package_list_for_every_inchi = []
         facet_field_list = []
-        log.debug(f'It reach till here {package_ids}')
+        # log.debug(f'It reach till here {package_ids}')
         try:
             if isinstance(package_ids,list):
                 package_ids_list = package_ids
@@ -512,18 +512,6 @@ class FooterController(plugins.SingletonPlugin):
         #log.debug(f'package_list_for_every_inchi: {package_list_for_every_inchi}')
         return package_list_for_every_inchi
 
-
-    # def get_facet_field_list_sent():
-    #     """
-    #     Get all Facets Field in PackageSearch all!!
-    #
-    #     :return:
-    #     """
-    #
-    #     facets_list = session.get('facet_field_list_final', None)
-    #     #log.debug(facets_list)
-    #     return facets_list
-
     def search_molecule():
         params = request.args if request.method == 'GET' else request.form
         search_query = request.args.get('search_query', '').strip()
@@ -538,21 +526,27 @@ class FooterController(plugins.SingletonPlugin):
 
         if FooterController.is_inchi_key(search_query):
             results, total = FooterController.search_by_inchi_key(search_query, page, per_page)
+
         else:
-            # Try searching by IUPAC Name
             results, total = FooterController.search_by_iupac_name(search_query, page, per_page)
             if total == 0:
-                # If no results, search by alternate_names with fuzzy matching
-                results, total = FooterController.search_by_alternate_name(search_query, page, per_page)
+                results, total = FooterController.search_by_molecule_name(search_query, page, per_page)
+            if total == 0:
+                results, total = FooterController.search_by_smiles(search_query, page, per_page)
+            if total == 0:
+                results, total = FooterController.search_by_inchi(search_query, page, per_page)
+            if total == 0:
+                results, total = FooterController.search_by_alternate_name(search_query)
+
 
         if total > 0:
             package_ids = [result['id'] for result in results['results']]
             display = {'results': FooterController.package_show_dict(package_ids)}
             # log.debug(f"DISPLAY RESULTS :{display}")
-            return render_template('molecule_view/molecule_view_self.html', packages=display)
+            return render_template('molecule_view/molecule_view_self.html', packages=display, search_query= search_query, total= total)
         else:
             log.debug("No results found for search query.")
-            return redirect(url_for('footer.molecule_view'))
+            return render_template('molecule_view/molecule_view_self.html', packages=None, search_query=search_query, total = 0)
 
 
     @staticmethod
@@ -590,6 +584,9 @@ class FooterController(plugins.SingletonPlugin):
             q_inchi_key = data_dict.get('q_inchi_key', '').strip()
             q_iupac_name = data_dict.get('q_iupac_name', '').strip()
             q_alternate_name = data_dict.get('q_alternate_name', '').strip()
+            q_molecule_name = data_dict.get('q_molecule_name', '').strip()
+            q_smiles = data_dict.get('q_smiles', '').strip()  # New field for SMILES
+            q_inchi = data_dict.get('q_inchi', '').strip()
             page = int(data_dict.get('page', 1))
             per_page = int(data_dict.get('per_page', 10))
 
@@ -747,7 +744,85 @@ class FooterController(plugins.SingletonPlugin):
                 # Return serialized results and total count
                 return {'results': paginated_results, 'total': total}
 
-            # Handle the case where q_inchi_key is not provided
+            elif q_molecule_name:
+                query = query.join(
+                    mol_relation_data, molecules_tab.id == mol_relation_data.molecules_id
+                ).filter(
+                    molecules_tab.molecule_name.ilike(f"%{q_molecule_name}%")
+                )
+
+                # Fetch the necessary fields: package_id from mol_relation_data and molecule_name from molecules_tab
+                query = query.with_entities(
+                    mol_relation_data.package_id,
+                    molecules_tab.molecule_name
+                )
+
+                # Log the retrieved package_id and molecule_name pairs
+                dataset_ids = query.all()
+                log.debug(f"Retrieved data (package_id, molecule_name): {dataset_ids}")
+
+                total = query.count()
+                log.debug(f"Total: {total}")
+
+                results = query.offset((page - 1) * per_page).limit(per_page).all()
+
+                serialized = [
+                    {
+                        'id': result.package_id,
+                        'molecule_name': result.molecule_name,
+                    }
+                    for result in results
+                ]
+
+                return {'results': serialized, 'total': total}
+
+
+            elif q_smiles:
+                query = query.join(
+                    mol_relation_data, molecules_tab.id == mol_relation_data.molecules_id
+                ).filter(
+                    molecules_tab.smiles.ilike(f"%{q_smiles}%")
+                )
+
+                # Fetch the necessary fields: package_id from mol_relation_data and smiles from molecules_tab
+                query = query.with_entities(
+                    mol_relation_data.package_id,
+                    molecules_tab.smiles
+                )
+
+                dataset_ids = query.all()
+                log.debug(f"Retrieved data (package_id, smiles): {dataset_ids}")
+
+                total = query.count()
+                results = query.offset((page - 1) * per_page).limit(per_page).all()
+
+                serialized = [{'id': result.package_id, 'smiles': result.smiles} for result in results]
+                return {'results': serialized, 'total': total}
+
+            elif q_inchi:
+                query = query.join(
+                    mol_relation_data, molecules_tab.id == mol_relation_data.molecules_id
+                ).filter(
+                    molecules_tab.inchi.ilike(f"%{q_inchi}%")
+                )
+
+                # Fetch the necessary fields: package_id from mol_relation_data and inchi from molecules_tab
+                query = query.with_entities(
+                    mol_relation_data.package_id,
+                    molecules_tab.inchi
+                )
+
+                dataset_ids = query.all()
+                log.debug(f"Retrieved data (package_id, inchi): {dataset_ids}")
+
+                total = query.count()
+                results = query.offset((page - 1) * per_page).limit(per_page).all()
+
+                serialized = [{'id': result.package_id, 'inchi': result.inchi} for result in results]
+                return {'results': serialized, 'total': total}
+
+                # Handle alternate names and any other existing code...
+
             else:
                 return redirect(url_for('footer.molecule_view'))
 
@@ -781,3 +856,52 @@ class FooterController(plugins.SingletonPlugin):
         except Exception as e:
             log.exception(f"Error in search_by_iupac_name: {str(e)}")
             return {}, 0
+
+    @staticmethod
+    def search_by_molecule_name(molecule_name, page, per_page):
+        """
+        Searches molecules by Molecule Name.
+        """
+        log.debug("Search based on molecule name")
+        data_dict = {'q_molecule_name': molecule_name, 'page': page, 'per_page': per_page}
+
+        try:
+            results = FooterController.molecule_search(data_dict)
+            total = results.get('total', len(results.get('results', [])))
+            return results, total
+        except Exception as e:
+            log.exception(f"Error in search_by_molecule_name: {str(e)}")
+            return {}, 0
+
+    @staticmethod
+    def search_by_smiles(smiles, page, per_page):
+        """
+        Searches molecules by SMILES.
+        """
+        log.debug("Search based on SMILES")
+        data_dict = {'q_smiles': smiles, 'page': page, 'per_page': per_page}
+
+        try:
+            results = FooterController.molecule_search(data_dict)
+            total = results.get('total', len(results.get('results', [])))
+            return results, total
+        except Exception as e:
+            log.exception(f"Error in search_by_smiles: {str(e)}")
+            return {}, 0
+
+    @staticmethod
+    def search_by_inchi(inchi, page, per_page):
+        """
+        Searches molecules by InChI.
+        """
+        log.debug("Search based on InChI")
+        data_dict = {'q_inchi': inchi, 'page': page, 'per_page': per_page}
+
+        try:
+            results = FooterController.molecule_search(data_dict)
+            total = results.get('total', len(results.get('results', [])))
+            return results, total
+        except Exception as e:
+            log.exception(f"Error in search_by_inchi: {str(e)}")
+            return {}, 0
+

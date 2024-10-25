@@ -53,7 +53,7 @@
 
       {% block package_search_results_list %}
         {% set return_img = h.footer(package_inchiKey = first_inchi_key, page = packages) %}
-        {% set mol_formula,exact_mass,inchi,iupac_name = h.get_molecule_data(package_id = package_result[0]['id']) %}
+        {% set mol_formula,exact_mass,inchi,iupac_name,molecule_name = h.get_molecule_data(package_id = package_result[0]['id']) %}
 
         <div>
             {{  h.snippet('snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
@@ -88,7 +88,7 @@
         {% set return_img = h.footer(package_inchiKey = molecules_id, page = packages) %}
        {# {% set mol_formula, IUpacName = h.get_molecule_data(package_inchiKey = molecules_id) %}#}
 
-        {% set mol_formula,exact_mass, inchi,iupac_name = h.get_molecule_data(package_id = packages.split(', ')[0]) %}
+        {% set mol_formula,exact_mass, inchi,iupac_name,molecule_name = h.get_molecule_data(package_id = packages.split(', ')[0]) %}
 
         {% if inchi and not inchi.startswith('Short')%}
               <div>
