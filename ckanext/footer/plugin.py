@@ -108,8 +108,8 @@ class FooterPlugin(plugins.SingletonPlugin):
 
     @staticmethod
     def molecule_view_search():
-        packages_list = session.get('search_results_final', None)
-        search_params = session.get('search_params', None)
+        packages_list = {'count': '', 'results': '', 'facets': ''}
+        search_params = None
         #log.debug(f'THESE ARE THE RESULTS : final {packages_list}')
 
         return packages_list, search_params
