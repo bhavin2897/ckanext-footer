@@ -26,7 +26,7 @@
 
                 {# Only process if the InChI key hasn't been processed yet #}
                 {% if inchi_key not in inchi_keys_processed %}
-                    {# Add this InChI key to the processed list #}
+
                     {% set inchi_keys_processed = inchi_keys_processed + [inchi_key] %}
 
                     {# Retrieve the image for this molecule #}
@@ -35,6 +35,9 @@
                     {# Check if InChI exists and does not start with "Short" #}
                     {% if inchi and not inchi.startswith('Short') %}
                         <div>
+                            <h3>Name: {{ iupac_name }}</h3>
+
+
                             {# Render molecule image and information #}
                             {{ h.snippet('snippets/ckanext_footer_package_search_result_image.html',
                                          return_value=return_img,
@@ -48,18 +51,11 @@
 
                         {# Loop through all datasets with the same InChI key and display their resources #}
                         <div>
-                            {% set inchi_key_seen = [] %}  {# Track processed inchi_keys #}
-                                {% for related_package in mol_dataset_list %}
-                                {# Check if the inchi_key has already been processed #}
-                                    {% if related_package.inchi_key not in inchi_key_seen %}
 
+                                {% for related_package in mol_dataset_list %}
                                         {# Render snippet for the current package #}
                                 {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = related_package.package_id %}
-
-                                {# Add this inchi_key to the seen list to skip duplicates #}
-                                        {% set inchi_key_seen = inchi_key_seen + [related_package.inchi_key] %}
-                                        {% endif %}
-                            {% endfor %}
+                                 {% endfor %}
 
                         </div>
 
