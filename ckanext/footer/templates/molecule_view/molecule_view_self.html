@@ -50,12 +50,12 @@
                         </div>
 
                         {# Loop through all datasets with the same InChI key and display their resources #}
+
                         <div>
 
-                                {% for related_package in mol_dataset_list %}
-                                        {# Render snippet for the current package #}
-                                {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = related_package.package_id %}
-                                 {% endfor %}
+                               {% for related_package in mol_dataset_list if related_package.inchi_key == inchi_key %}
+                                        {% snippet 'snippets/ckanext_footer_molecule_view_per_image.html', package = related_package.id  %}
+                                {% endfor %}
 
                         </div>
 
