@@ -53,6 +53,14 @@
     <div class="col col-md-7">
         <table class="table borderless">
             <tbody>
+
+            {% if molecule_name %}
+            <tr>
+              <th scope="row" class="dataset-label">{{ _("Molecule Name") }}</th>
+              <td class="dataset-details"> {{ molecule_name }}</td>
+            </tr>
+            {% endif %}
+
             {% if IUpacName %}
             <tr>
               <th scope="row" class="dataset-label">{{ _("IUPAC Name") }}</th>
