@@ -21,13 +21,15 @@
             {% set mol_formula = package.mol_formula %}
             {% set exact_mass = package.exactmass %}
             {% set inchi = package.inchi %}
-            {% set iupac_name = package.iupac_name %}
             {% set molecules_id = package.id %}
 
             {% set return_img = h.footer(package_inchiKey=inchi_key, page=package) %}
+            {% set mol_formula,exact_mass, inchi,iupac_name,molecule_name = h.get_molecule_data(package_id = molecules_id ) %}
+
             <div>
                 {{  h.snippet('snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = inchi_key,
-            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass, inchi=inchi, iupac_name=iupac_name) }}
+            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass,
+                inchi=inchi, iupac_name=iupac_name, molecule_name=molecule_name ) }}
             </div>
 
             <div>

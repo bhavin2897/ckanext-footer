@@ -57,7 +57,7 @@
 
         <div>
             {{  h.snippet('snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
-            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass, inchi=inchi, iupac_name=iupac_name) }}
+            package = packages, molecule_formula = mol_formula, exact_mass = exact_mass, inchi=inchi, iupac_name=iupac_name, molecule_name= molecule_name ) }}
          </div>
 
         {{ h.snippet('snippets/package_list.html', packages= packages.results ) }}
