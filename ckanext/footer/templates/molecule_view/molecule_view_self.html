@@ -26,7 +26,7 @@
 
             {% set return_img = h.footer(package_inchiKey=inchi_key, page=package) %}
             <div>
-                {{  h.snippet('snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = molecules_id,
+                {{  h.snippet('snippets/ckanext_footer_package_search_result_image.html', return_value = return_img, imageName = inchi_key,
             package = packages, molecule_formula = mol_formula, exact_mass = exact_mass, inchi=inchi, iupac_name=iupac_name) }}
             </div>
 
