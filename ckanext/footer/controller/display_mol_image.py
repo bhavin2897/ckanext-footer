@@ -249,7 +249,7 @@ class FooterController(plugins.SingletonPlugin):
 
                 # Log the retrieved package_id and inchi_key pairs
                 dataset_ids = query.all()
-                log.debug(f"Retrieved data (package_id, inchi_key): {dataset_ids}")
+                # log.debug(f"Retrieved data (package_id, inchi_key): {dataset_ids}")
 
                 # Get the total count of rows
                 total = query.count()
@@ -285,7 +285,7 @@ class FooterController(plugins.SingletonPlugin):
 
                 # Log the retrieved package_id and iupac_name pairs
                 dataset_ids = query.all()
-                log.debug(f"Retrieved data (package_id, iupac_name): {dataset_ids}")
+                # log.debug(f"Retrieved data (package_id, iupac_name): {dataset_ids}")
 
                 # Get the total count of rows
                 total = query.count()
@@ -402,7 +402,7 @@ class FooterController(plugins.SingletonPlugin):
 
                 # Log the retrieved package_id and molecule_name pairs
                 dataset_ids = query.all()
-                log.debug(f"Retrieved data (package_id, molecule_name): {dataset_ids}")
+                #log.debug(f"Retrieved data (package_id, molecule_name): {dataset_ids}")
 
                 total = query.count()
                 log.debug(f"Total: {total}")
@@ -434,7 +434,7 @@ class FooterController(plugins.SingletonPlugin):
                 )
 
                 dataset_ids = query.all()
-                log.debug(f"Retrieved data (package_id, smiles): {dataset_ids}")
+                # log.debug(f"Retrieved data (package_id, smiles): {dataset_ids}")
 
                 total = query.count()
                 results = query.offset((page - 1) * per_page).limit(per_page).all()
@@ -456,7 +456,7 @@ class FooterController(plugins.SingletonPlugin):
                 )
 
                 dataset_ids = query.all()
-                log.debug(f"Retrieved data (package_id, inchi): {dataset_ids}")
+                # log.debug(f"Retrieved data (package_id, inchi): {dataset_ids}")
 
                 total = query.count()
                 results = query.offset((page - 1) * per_page).limit(per_page).all()
