@@ -83,7 +83,10 @@ class FooterController(plugins.SingletonPlugin):
 
         inchi,iupac_name,molecule_name = mol_relation_data.get_molecule_data_by_package_id(package_id)
 
-        inchi_n = inchi[0][0].replace('["', '').replace('"]', '')
+        try:
+            inchi_n = inchi[0][0].replace('["', '').replace('"]', '')
+        except:
+            pass
 
         # log.debug(inchi_n)
         try:
