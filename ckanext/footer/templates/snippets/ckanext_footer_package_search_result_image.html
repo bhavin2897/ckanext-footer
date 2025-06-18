@@ -1,15 +1,17 @@
 
-{% set imageName = imageName %}
+{% set final_value = inchi_key if inchi_key else imageName %}
 {% set return_value =  return_value %}
 {% set package = package %}
 {% set molecule_formula = molecule_formula %}
-{# {% set IUpacName = IUpacName %} #}
+{% set IUpacName = iupac_name %}
 {% set inchi = inchi %}
 {% set exact_mass = exact_mass %}
 
 {# {% asset 'statictheme/statictheme.css' %} #}
     <link href='https://unpkg.com/css.gg@2.0.0/icons/css/chevron-up.css' rel='stylesheet'>
-    <style>
+
+
+    <style type="text/css">
 
          /* Style for the collapsible content (initially hidden) */
         collapsible {
@@ -23,9 +25,7 @@
             align-items: center; /* Center the content vertically */
             text-align: center; /* Center the text (if any) */
         }
-        .collapsible img {
-            max-width: 100%; /* Ensure the image doesn't exceed the container width */
-        }
+
 
         /* Style for the collapse button/icon */
         .collapse-button {
@@ -39,20 +39,55 @@
         .table-borderless td, .borderless th {
         border: none;
         }
+
+        /* Style for the collapsible content (initially hidden) */
+
+.molecule_container img {
+    border: 1px solid #ccc;
+    width: 100%;
+    cursor: zoom-in;
+    height: auto;
+    transition: transform 0.3s ease; /* Smooth zoom animation */
+}
+
+input[type=checkbox] {
+    display: none; /* Hide the checkbox */
+}
+
+.molecule_container label {
+    display: inline-block; /* Ensure the label behaves correctly */
+    margin: 0; /* Remove any default margin */
+    padding: 0; /* Remove any default padding */
+    line-height: 0; /* Remove unwanted spacing */
+}
+
+.molecule_container label::before,
+.molecule_container label::after {
+    content: ''; /* Remove any default content */
+    display: none; /* Ensure no pseudo-elements are displayed */
+}
+
+input[type=checkbox]:checked + label > img {
+    transform: scale(1.5); /* Apply zoom effect */
+    cursor: zoom-out; /* Change cursor on zoom */
+}
     </style>
 
 
 
-<div class="row">
-    <div class = "col col-md-5">
-         <div>
-            <img id="search_image" src="data:image/png;base64,{{return_value}}" alt="{{imageName}}"/>
-         </div>
+  <div class="row justify-content-between align-items-start">
 
-    </div>
-    <div class="col col-md-7">
+    <div class="col-md-8">
         <table class="table borderless">
             <tbody>
+
+            {% if molecule_name %}
+            <tr>
+              <th scope="row" class="dataset-label">{{ _("Molecule Name") }}</th>
+              <td class="dataset-details"> {{ molecule_name }}</td>
+            </tr>
+            {% endif %}
+
             {% if IUpacName %}
             <tr>
               <th scope="row" class="dataset-label">{{ _("IUPAC Name") }}</th>
@@ -60,17 +95,17 @@
             </tr>
             {% endif %}
 
-            {% if inchi %}
-            <tr>
-              <th scope="row" class="dataset-label">{{ _("InChI") }}</th>
-              <td class="dataset-details"> {{ inchi }}</td>
-            </tr>
-            {% endif %}
+<!--            {% if inchi %}-->
+<!--            <tr>-->
+<!--              <th scope="row" class="dataset-label">{{ _("InChI") }}</th>-->
+<!--              <td class="dataset-details"> {{ inchi }}</td>-->
+<!--            </tr>-->
+<!--            {% endif %}-->
 
             {% if imageName %}
             <tr>
               <th scope="row" class="dataset-label">{{ _("InChIKey") }}</th>
-              <td class="dataset-details"> {{ imageName }}</td>
+              <td class="dataset-details"> {{ final_value }}</td>
             </tr>
             {% endif %}
 
@@ -91,6 +126,16 @@
             </tbody>
         </table>
     </div>
-
+<div class="col-md-1"> </div>
+<div class="col-md-3">
+<div class="molecule_container">
+    <input type="checkbox" id="zoom_img_{{imageName}}">
+    <label for="zoom_img_{{imageName}}">
+            <img
+                 src="data:image/png;base64,{{return_value}}"
+                 alt="{{imageName}}">
+        </label>
+</div>
     <br>
+</div>
 </div>
