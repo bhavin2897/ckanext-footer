@@ -57,6 +57,11 @@ To install ckanext-footer:
 
      sudo service apache2 reload
 
+## Molecule View Page 
+FROM v0.2.5
+UNDER DEVELOPMENT - this page has separate functionalities to  search within the molecules table
+Currently for IUPAC NAME, InChIkey and alternate Names/Synonyms 
+
 
 ## Config settings
 
