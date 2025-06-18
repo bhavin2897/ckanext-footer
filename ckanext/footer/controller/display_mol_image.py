@@ -352,6 +352,7 @@ class FooterController(plugins.SingletonPlugin):
 
                 # Perform fuzzy matching using rapidfuzz
                 search_names = [item['alternate_name'] for item in alternate_name_mapping]
+
                 # matches = process.extract(q_alternate_name, search_names, scorer=fuzz.WRatio, limit=1000)
                 matches = []
                 # Filter matches based on a similarity threshold
