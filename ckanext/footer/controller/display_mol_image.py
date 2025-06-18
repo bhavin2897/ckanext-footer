@@ -9,7 +9,7 @@ from ckanext.rdkit_visuals.models.molecule_rel import MolecularRelationData as m
 #from ckanext.rdkit_visuals.models.molecule_rel import MolecularRelationData as mol_relation_data
 from ckanext.rdkit_visuals.models.molecule_tab import Molecules as molecules_tab
 
-from rapidfuzz import process, fuzz
+# from rapidfuzz import process, fuzz
 
 from flask import Blueprint, render_template, session, request, redirect, url_for
 from ckanext.footer.controller.search_controller import SearchMoleculeController
@@ -352,8 +352,8 @@ class FooterController(plugins.SingletonPlugin):
 
                 # Perform fuzzy matching using rapidfuzz
                 search_names = [item['alternate_name'] for item in alternate_name_mapping]
-                matches = process.extract(q_alternate_name, search_names, scorer=fuzz.WRatio, limit=1000)
-
+                # matches = process.extract(q_alternate_name, search_names, scorer=fuzz.WRatio, limit=1000)
+                matches = []
                 # Filter matches based on a similarity threshold
                 threshold = 80  # Adjust as needed
                 matched_packages = []
