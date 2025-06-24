@@ -81,7 +81,10 @@
               <entry key="http://schema.org">
                 <value>
                   <set>
+
                     <option value="urn:tag:lnkd.tech,2023:digest:sha-256/B6AD7D1EFCDF035F9C6EB30601D7DD9AE381B33AD557D9119BC10DCB436FAB8D" />
+
+
                   </set>
                 </value>
               </entry>
@@ -95,14 +98,19 @@
               <entry key="http://spinrdf.org/spin">
                 <value>
                   <set>
+
                     <option value="urn:tag:lnkd.tech,2023:digest:sha-256/CC3E56C1F2BC6D4213BAF662C0A1FEB97ED968FA21D6C0ED7E44887747C74BC3" />
+
+
                   </set>
                 </value>
               </entry>
               <entry key="http://spinrdf.org/spl">
                 <value>
                   <set>
+
                     <option value="urn:tag:lnkd.tech,2023:digest:sha-256/DEFAF007176C3F41DDDDFACFF89A4D57CD78833ED635FD3C87962D6312EA65A4" />
+
                   </set>
                 </value>
               </entry>
@@ -116,7 +124,10 @@
               <entry key="http://www.w3.org/2000/01/rdf-schema">
                 <value>
                   <set>
+
                     <option value="urn:tag:lnkd.tech,2023:digest:sha-256/ECEE3A011B7C13EA2A7E40B0A208BFE6BE53D69FDD53EE035E09E9F9E5108AD6" />
+
+
                   </set>
                 </value>
               </entry>
@@ -159,6 +170,7 @@
                 <value>
                   <set>
                     <option value="urn:tag:lnkd.tech,2023:digest:sha-256/2C09EED77869A80B37356C02905D6A2BDA372DE45CB8A1E14C4FE5F2FCD25D57" />
+
                   </set>
                 </value>
               </entry>
