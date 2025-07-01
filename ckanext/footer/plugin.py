@@ -42,14 +42,6 @@ class FooterPlugin(plugins.SingletonPlugin):
     def get_blueprint(self):
         blueprint = Blueprint(self.name, self.__module__)
 
-
-        blueprint.add_url_rule(
-            u'/molecule_view',
-            u'molecule_view',
-            molecule_view,
-            methods=['GET', 'POST']
-        )
-
         blueprint.add_url_rule(
             u'/search_bar',
             u'search_bar',

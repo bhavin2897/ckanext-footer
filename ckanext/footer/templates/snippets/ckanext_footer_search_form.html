@@ -6,7 +6,9 @@
 {% set no_bottom_border = no_bottom_border if no_bottom_border else false %}
 {% set form_id = form_id if form_id else false %}
 
-<form {% if form_id %}id="{{ form_id }}" {% endif %}class="search-form{% if no_bottom_border %} no-bottom-border{% endif %}" method="get" data-module="select-switch">
+<form {% if form_id %}
+      id="{{ form_id }}" {% endif %}
+      class="search-form {% if no_bottom_border %} no-bottom-border{% endif %}" method="get" data-module="select-switch">
 
   {% block search_input %}
     {% if h.search_autocomplete_enable_default_implementation() %}
@@ -14,7 +16,7 @@
                  data-module="ckanext-search-autocomplete"
                  data-module-suggestion-box="#search-autocomplete--suggestion-box"
                  data-module-autocomplete-input="#field-giant-search" >
-                 {% snippet 'advanced_search/advanced_search_search_barpage_form.html' %}
+                 {% snippet 'advanced_search/advanced_search_search_form.html' %}
             </div>
 
     {% endif %}
