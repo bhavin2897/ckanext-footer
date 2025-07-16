@@ -132,6 +132,7 @@ input[type=checkbox]:checked + label > img {
     <input type="checkbox" id="zoom_img_{{imageName}}">
     <label for="zoom_img_{{imageName}}">
             <img
+                loading="lazy"
                  src="data:image/png;base64,{{return_value}}"
                  alt="{{imageName}}">
         </label>
