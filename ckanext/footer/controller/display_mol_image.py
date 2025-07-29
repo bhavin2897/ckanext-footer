@@ -44,7 +44,7 @@ class FooterController(plugins.SingletonPlugin):
         inchi_key = package_inchiKey
 
         try:
-            if inchi_key:
+            if not inchi_key.startswith('data'):
 
                 filepath = '/var/lib/ckan/default/storage/images/' + str(inchi_key) + '.png'
                 file = open(filepath, 'rb').read()
