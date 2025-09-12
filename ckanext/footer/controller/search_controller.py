@@ -28,6 +28,5 @@ class SearchMoleculeController(plugins.SingletonPlugin):
         else:
             return self.dataset_search()
 
-
     #def dataset_search(self):
     #    return toolkit.render('package/search.html')
