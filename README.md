@@ -12,9 +12,39 @@ Extension for following Static page and views on Frontend for NFDI4Chem Search S
 
 
 The Extension mostly provides functionality for designing the Molecule_View CKAN template page.
-Molecule_View displays Datasets and image for every Molecule present in the Search Service.  
+Molecule_View displays Datasets and image for every Molecule present in the Search Service. 
 
-For every Molecule InChIKey search, the molecule_view gives the User to visualize image and their dataset. 
+# Monthly Dataset Counts Snapshot Extension
+
+This extension adds a private monthly dataset‐count snapshot feature to CKAN.  
+It allows sysadmins to record and review dataset counts per organization over time.
+
+---
+
+## Features
+
+### Admin UI
+A new page is available at:
+    
+    /ckan-admin/monthly-counts
+
+From here, sysadmins can:
+- Click **Run snapshot now** to generate a new snapshot
+- View previously stored snapshots (total + per organization)
+- Data is stored in a **private Datastore-backed resource**
+
+### CLI Support
+
+Generate a snapshot manually:
+
+    ckan monthlycounts snapshot
+
+Generate a snapshot for a specific date:
+
+    ckan monthlycounts snapshot --date 2025-11-10
+
+
+
 ****************************************************************
 ## Requirements
 
