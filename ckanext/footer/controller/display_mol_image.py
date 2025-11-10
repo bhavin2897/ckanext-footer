@@ -3,7 +3,7 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import ckan.model as model
 import re
-
+from ckan.common import request
 
 from ckanext.rdkit_visuals.models.molecule_rel import MolecularRelationData as mol_relation_data
 #from ckanext.rdkit_visuals.models.molecule_rel import MolecularRelationData as mol_relation_data

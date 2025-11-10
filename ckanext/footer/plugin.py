@@ -1,16 +1,16 @@
 from __future__ import annotations
-
+import datetime
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 from ckanext.related_resources.models.related_resources import RelatedResources as related_resources
 from ckanext.footer.controller.search_controller import SearchMoleculeController
+from ckanext.footer.controller.monthlycount import MonthlyCountController #DATASET_NAME, RESOURCE_NAME, OWNER_ORG
 import ckan.logic as logic
-
-from flask import Blueprint, render_template, session
+import click
+from flask import Blueprint, render_template, session, has_request_context,redirect, url_for
 import asyncio
 from ckanext.footer.controller.display_mol_image import FooterController
-
-
+from ckan.common import request
 import logging
 import json
 from typing import Any, Dict
@@ -19,11 +19,7 @@ log = logging.getLogger(__name__)
 
 get_action = logic.get_action
 
-
-def molecule_view():
-    return render_template('molecule_view/molecule_view.html')
-def searched_molecule_view():
-    return render_template('molecule_view/molecule_view_self.html')
+CONFIG_GET_MOLECULES_PER_PAGE = "ckanext.footer.molecules_per_page"
 
 
 class FooterPlugin(plugins.SingletonPlugin):
@@ -75,12 +71,18 @@ class FooterPlugin(plugins.SingletonPlugin):
                 #'package_list': FooterController.molecule_view_list
                }
 
+
     @staticmethod
     def before_search(search_params: Dict[str, Any]) -> Dict[str, Any]:
         # Example modification: add a logging for debug and modify query if empty
         if search_params.get('q', '') == '':
             search_params['q'] = '*:*'  # default query if none provided
-        session['initial_search_params'] = search_params
+        if not has_request_context():
+            return search_params
+        try:
+            session['initial_search_params'] = search_params
+        except Exception:
+            pass
         return search_params
 
     @staticmethod
@@ -102,6 +104,112 @@ class FooterPlugin(plugins.SingletonPlugin):
     def molecule_view_search():
         packages_list = {'count': '', 'results': '', 'facets': ''}
         search_params = None
-        #log.debug(f'THESE ARE THE RESULTS : final {packages_list}')
+        #log.debug(f'THESE ARE THE RESULTS: final {packages_list}')
 
         return packages_list, search_params
+
+
+# New Extension
+DATASET_NAME = 'site-monthly-counts'
+RESOURCE_NAME = 'monthly_counts'
+OWNER_ORG = '9dc6fd86-014c-41ec-8473-535d439078fb'  # can be overridden via ini
+
+
+class MonthlyCountsAdminPlugin(plugins.SingletonPlugin):
+    """Adds /ckan-admin/monthly-counts (admin-only) and snapshot helpers."""
+    plugins.implements(plugins.IConfigurer)
+    plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.IConfigurable)
+    plugins.implements(plugins.IClick)
+
+    def update_config(self, config):
+        log.debug('update_config: adding templates directory')
+        toolkit.add_template_directory(config, 'templates')
+
+    def configure(self, config):
+        global DATASET_NAME, RESOURCE_NAME, OWNER_ORG
+        DATASET_NAME = config.get('ckanext.monthlycounts.dataset_name', DATASET_NAME)
+        RESOURCE_NAME = config.get('ckanext.monthlycounts.resource_name', RESOURCE_NAME)
+        OWNER_ORG = config.get('ckanext.monthlycounts.owner_org', OWNER_ORG)
+        log.debug('configure: DATASET_NAME=%s RESOURCE_NAME=%s OWNER_ORG=%s',
+                  DATASET_NAME, RESOURCE_NAME, OWNER_ORG)
+
+        # push settings to controller globals
+        MonthlyCountController.DATASET_NAME = DATASET_NAME
+        MonthlyCountController.RESOURCE_NAME = RESOURCE_NAME
+        MonthlyCountController.OWNER_ORG = OWNER_ORG
+
+    # --- Admin page blueprint ---
+    def get_blueprint(self):
+        log.debug('get_blueprint: creating blueprint monthly_counts_admin')
+        bp = Blueprint('monthly_counts_admin', __name__)
+
+        @bp.route('/ckan-admin/monthly-counts', methods=['GET', 'POST'])
+        def monthly_counts_admin():
+            log.debug('monthly_counts_admin: start, method=%s', request.method)
+            context = {
+                'user': toolkit.c.user,
+                'auth_user_obj': toolkit.c.userobj,
+                'ignore_auth': True,
+            }
+            log.debug('monthly_counts_admin: context user=%s ignore_auth=%s',
+                      context.get('user'), context.get('ignore_auth'))
+
+            res_id = MonthlyCountController._get_or_bootstrap_resource(context)
+            log.debug('monthly_counts_admin: resource ready res_id=%s', res_id)
+
+            if request.method == 'POST' and request.form.get('do_snapshot'):
+                log.debug('monthly_counts_admin: POST do_snapshot detected')
+                try:
+                    MonthlyCountController._snapshot_now(context)
+                    toolkit.h.flash_success('Snapshot created successfully.')
+                    log.debug('monthly_counts_admin: snapshot success')
+                    return redirect(url_for('monthly_counts_admin.monthly_counts_admin'))
+                except Exception as e:
+                    log.exception('monthly_counts_admin: snapshot failed: %s', e)
+                    toolkit.h.flash_error(f'Snapshot failed: {e}')
+
+            rows = toolkit.get_action('datastore_search')(context, {
+                'resource_id': res_id,
+                'limit': 10000,
+                'sort': 'snapshot_date desc, org_name asc'
+            }).get('records', [])
+
+            return toolkit.render('admin/monthly_counts.html', extra_vars={'rows': rows})
+
+        return bp
+
+    # --- CLI (ckan monthlycounts snapshot) ---
+    def get_commands(self):
+        import click
+
+        @click.group()
+        def monthlycounts():
+            """Monthly dataset counting utilities (admin)."""
+            log.debug('CLI monthlycounts group invoked')
+
+        @monthlycounts.command()
+        @click.option('--date', 'date_str', default=None,
+                      help='Snapshot date (YYYY-MM-DD). Defaults to today.')
+        def snapshot(date_str):
+            """Write a snapshot row-set (total + per-org) to the Datastore."""
+            log.debug('CLI snapshot: start date_str=%s', date_str)
+            context = {
+                'ignore_auth': True,
+                'user': toolkit.config.get('ckan.tracking_user', 'admin')
+            }
+            try:
+                snap_date = datetime.date.fromisoformat(date_str) if date_str else None
+            except Exception:
+                log.debug('CLI snapshot: invalid date_str=%s falling back to today', date_str)
+                snap_date = None
+
+            # Ensure the target resource exists before upsert
+            res_id = MonthlyCountController._get_or_bootstrap_resource(context)
+            log.debug('CLI snapshot: ensured resource res_id=%s', res_id)
+
+            MonthlyCountController._snapshot_now(context, snap_date)
+            log.debug('CLI snapshot: completed OK')
+            click.echo('Monthly snapshot written.')
+
+        return [monthlycounts]

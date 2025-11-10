@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+
+{% block primary_content_inner %}
+
+<h2>Monthly Dataset Counts (Admin Only)</h2>
+
+<form method="post" style="margin: 1em 0;">
+      {{ h.csrf_input() }}
+  <button class="btn btn-primary" type="submit" name="do_snapshot" value="1">Run snapshot now</button>
+</form>
+
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th style="width:140px;">Date</th>
+      <th>Repository</th>
+      <th style="width:160px;">Count</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for r in rows %}
+    <tr>
+      <td>{{ r.snapshot_date }}</td>
+      <td>{{ r.org_name }}</td>
+      <td>{{ r.dataset_count }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+
+{% block secondary_content %}
+
+<div class="module module-narrow module-shallow">
+  <h2 class="module-heading">
+    <i class="fa fa-info-circle"></i>
+    {{ _("Monthly Count of Datasets") }}
+  </h2>
+    <div class="module-content">
+
+      {% trans %}
+      <p>This page stores snapshots in a private Datastore resource. </p>
+        <p> <strong> Date:</strong>  We have the new Date & Time stamp when the snapshot is clicked </p>
+        <p> <strong> Repository: </strong>  Repository name tells the which repository of the datasets count </p>
+        <p> <strong> Count: </strong> Number of Datasets </p>
+
+          {% endtrans %}
+
+
+  </div>
+</div>
+{% endblock %}

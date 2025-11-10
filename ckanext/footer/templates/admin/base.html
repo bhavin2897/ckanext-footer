@@ -1,0 +1,8 @@
+{% ckan_extends %}
+
+
+{% block content_primary_nav %}
+{{ super() }}
+{{ h.build_nav_icon('monthly_counts_admin.monthly_counts_admin', _('Monthly Dataset Count'), icon='bar-chart') }}
+
+{% endblock%}

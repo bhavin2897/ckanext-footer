@@ -1,13 +1,16 @@
 {% ckan_extends %}
 
+{# Setting and limiting the molecules only for 10-15 datasets when loading #}
+
+
 {% set firstPackage = [] %}
-<p> THIS IS FROM SEARCH.HTML in FOOTER PLUGIN. </p>
 {% block package_search_results_list %}
+<p> {{ page }}</p>
     {% if page.items %}
         {% set firstPackage = page.items[0] %}
     {% endif %}
 
-    {% if firstPackage.inchi_key  %}
+    {% if firstPackage.inchi_key %}
         {% set controllerUrl = h.url_for('footer.display_mol_image', package_inchiKey = firstPackage.inchi_key, page=page, _external=True) %}
         {% set return_value = h.footer(package_inchiKey = firstPackage.inchi_key, page = page) %}
 
@@ -21,5 +24,3 @@
 
 {{ super() }}
 {% endblock %}
-
-

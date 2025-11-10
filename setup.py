@@ -16,9 +16,9 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # http://packaging.python.org/en/latest/tutorial.html#version
-    version='0.2.5',
+    version='0.3.0',
 
-    description='''footer for NFDI4Chem''',
+    description='''footer for NFDI4Chem and Monthly Count logic''',
     long_description=long_description,
     long_description_content_type="text/markdown",
 
@@ -85,9 +85,13 @@ setup(
     entry_points='''
         [ckan.plugins]
         footer=ckanext.footer.plugin:FooterPlugin
+        monthly_counts_admin=ckanext.footer.plugin:MonthlyCountsAdminPlugin
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
+        
+        [ckan.cli]
+        monthlycounts=ckanext.footer.plugin:MonthlyCountsAdminPlugin
     ''',
 
     # If you are changing from the default layout of your extension, you may
