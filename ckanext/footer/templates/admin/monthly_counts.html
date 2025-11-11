@@ -5,28 +5,88 @@
 <h2>Monthly Dataset Counts (Admin Only)</h2>
 
 <form method="post" style="margin: 1em 0;">
-      {{ h.csrf_input() }}
+  {{ h.csrf_input() }}
   <button class="btn btn-primary" type="submit" name="do_snapshot" value="1">Run snapshot now</button>
 </form>
 
-<table class="table table-bordered table-condensed">
-  <thead>
-    <tr>
-      <th style="width:140px;">Date</th>
-      <th>Repository</th>
-      <th style="width:160px;">Count</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for r in rows %}
-    <tr>
-      <td>{{ r.snapshot_date }}</td>
-      <td>{{ r.org_name }}</td>
-      <td>{{ r.dataset_count }}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+{# -------- Build a pivot (repos = columns, date = rows) -------- #}
+{% set repos = [] %}
+{% set has_total = False %}
+{% for r in rows %}
+
+    {% if r.org_name not in repos %}
+      {% set _ = repos.append(r.org_name) %}
+    {% endif %}
+
+{% endfor %}
+
+
+{# by_date = { 'YYYY-MM-DD': { 'repo': count, ... } } #}
+{% set by_date = {} %}
+{% for r in rows %}
+  {% set d = r.snapshot_date %}
+  {% if d not in by_date %}
+    {% set _ = by_date.update({d: {}}) %}
+  {% endif %}
+  {% set daymap = by_date[d] %}
+  {% set _ = daymap.update({r.org_name: r.dataset_count}) %}
+{% endfor %}
+
+<style>
+  /* force horizontal scroll & prevent header text overlap */
+  .mc-scroll-x{overflow-x:auto; -webkit-overflow-scrolling: touch;}
+  .mc-scroll-x table{
+    width: max-content !important;   /* wider than container if needed -> scroll */
+    min-width: 100%;                 /* still fill on narrow sets */
+    table-layout: auto !important;   /* let content size columns */
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .mc-scroll-x th,
+  .mc-scroll-x td{
+    white-space: nowrap;             /* keep headers on one line */
+    padding: 8px 12px;               /* avoid visual collision */
+    vertical-align: middle;
+  }
+  .mc-sticky-head thead th{
+    position: sticky;
+    top: 0;
+    background: #fff;                /* optional: sticky header while scrolling */
+    z-index: 2;
+  }
+</style>
+
+<div class="mc-scroll-x">
+  <table class="table table-bordered table-condensed table-striped mc-sticky-head">
+    <thead>
+      <tr>
+        <th style="white-space:nowrap;">Date</th>
+        {% for repo in repos|sort if repo != '__TOTAL__' %}
+          <th style="white-space:nowrap;">{{ repo }}</th>
+        {% endfor %}
+        {% if '__TOTAL__' in repos %}
+          <th style="white-space:nowrap;">TOTAL</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in by_date.keys()|list|sort(reverse=True) %}
+        <tr>
+          <td style="white-space:nowrap;">{{ d }}</td>
+          {% for repo in repos|sort if repo != '__TOTAL__' %}
+            <td style="text-align:right;">{{ by_date[d].get(repo, '') }}</td>
+          {% endfor %}
+          {% if '__TOTAL__' in repos %}
+            <td style="text-align:right; font-weight:bold;">
+              {{ by_date[d].get('__TOTAL__', '') }}
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
 
 {% endblock %}
 
