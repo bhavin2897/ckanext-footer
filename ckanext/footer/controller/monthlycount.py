@@ -135,9 +135,16 @@ class MonthlyCountController:
 
     @staticmethod
     def _count_total(context):
-        out = t.get_action('package_search')(context, {'q': '*:*', 'rows': 0})
+        out = t.get_action('package_search')(context, {'fq': '*:* AND (type:dataset)', 'rows': 0})
         count = int(out['count'])
         log.debug('_count_total: count=%d', count)
+        return count
+
+    @staticmethod
+    def _count_total_molecules(context):
+        out = t.get_action('package_search')(context, {'fq': '*:* AND (type:molecule)', 'rows': 0})
+        count = int(out['count'])
+        log.debug('_count_toal_molecules: count=%d', count)
         return count
 
     @staticmethod
@@ -165,7 +172,7 @@ class MonthlyCountController:
     def _count_for_org(context, org_id):
 
         log.debug(f'COUNTING STARTS for {org_id} ')
-        out = t.get_action('package_search')(context, {'fq': 'owner_org:{}'.format(org_id), 'rows': 0})
+        out = t.get_action('package_search')(context, {'fq': 'owner_org:{} AND (type:dataset)'.format(org_id), 'rows': 0})
         log.debug("_count_for_org: count=%s for org_id=%s", out['count'], org_id)
         cnt = int(out['count'])
         log.debug('_count_for_org: count=%s for org_id=%s', cnt, org_id)
@@ -184,9 +191,17 @@ class MonthlyCountController:
         total = MonthlyCountController._count_total(context)
         records = [{
             'snapshot_date': today,
-            'org_name': '__TOTAL__',
+            'org_name': '__TOTAL__Datasets',
             'dataset_count': total
         }]
+
+        total_molecules = MonthlyCountController._count_total_molecules(context)
+        records.append({
+            'snapshot_date': today,
+            'org_name': 'Total Molecules',
+            'dataset_count': total_molecules
+
+        })
         log.debug('_snapshot_now: appended TOTAL=%d', total)
 
         for org in MonthlyCountController._org_handles(context):
