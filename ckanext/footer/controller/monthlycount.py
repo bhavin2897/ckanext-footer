@@ -2,6 +2,7 @@
 import datetime
 import logging
 from ckan.plugins import toolkit as t
+#from ckanext.footer.plugin import OWNER_ORG
 
 log = logging.getLogger(__name__)
 
@@ -10,7 +11,7 @@ class MonthlyCountController:
     # will be overwritten from plugin.configure
     DATASET_NAME = 'site-monthly-counts'
     RESOURCE_NAME = 'monthly_counts'
-    OWNER_ORG = '5b7badc7-a238-4095-8438-1c503b03292d'
+    OWNER_ORG = 'ckanext.monthlycounts.owner_org'
     OWNER_TYPE = 'repository'
 
     @staticmethod
