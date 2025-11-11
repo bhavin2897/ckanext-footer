@@ -19,10 +19,52 @@ Molecule_View displays Datasets and image for every Molecule present in the Sear
 This extension adds a private monthly dataset‐count snapshot feature to CKAN.  
 It allows sysadmins to record and review dataset counts per organization over time.
 
+
+--- 
+Follow these steps **before** using the monthly snapshot UI or CLI feature.
+
+---
+
+### 1. Create a Hidden Organization
+1. Log in to CKAN as an admin.
+2. Create a new **organization** to store the snapshot dataset.
+3. Set it to **private/hidden**.
+4. Copy the **organization ID** (not the name).
+
+---
+
+### 2. Add Organization ID to `ckan.ini`
+
+Edit your CKAN config:
+
+```ini
+ckanext.footer.monthlycounts.owner_org = <ORG_ID_HERE>
+```
+--- 
+### 3. Verify Datastore Credentials
+
+Make sure Datastore plugin is added, also check if these settings exist and are correct:
+```ini 
+ckan.plugin = ... datastore footer ... monthly_counts_admin
+ckan.datastore.write_url = postgresql://ckan_default:<WRITE_PASSWORD>@localhost/datastore_default
+ckan.datastore.read_url  = postgresql://datastore_default:<READ_PASSWORD>@localhost/datastore_default
+```
+Write user must be ckan_default
+Read user must be datastore_default
+
+--- 
+### 4. Apply Datastore Permissions (Required)
+
+Run the following command on the server:
+    
+    ckan -c /etc/ckan/default/ckan.ini datastore set-permissions | sudo -u postgres psql -v ON_ERROR_STOP=1
+
+This step ensures required SQL functions (including populate_full_text_trigger()) exist.
+
 ---
 
 ## Features
-Firstly, create a new dataset with a hidden organization if possible. 
+
 ### Admin UI
 A new page is available at:
     
