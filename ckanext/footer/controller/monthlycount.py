@@ -45,7 +45,6 @@ class MonthlyCountController:
             log.debug('_ensure_private_metrics_resource: package exists id=%s state=%s',
                       pkg.get('id'), pkg.get('state'))
         except t.ObjectNotFound:
-            log.debug('_ensure_private_metrics_resource: package missing, creating')
             try:
                 pkg = pkg_create(context, {
                     'name': dataset_name,
@@ -67,8 +66,7 @@ class MonthlyCountController:
         # find resource by name
         for r in pkg.get('resources', []):
             if r.get('name') == resource_name:
-                log.debug('_ensure_private_metrics_resource: found resource id=%s state=%s url_type=%s',
-                          r.get('id'), r.get('state'), r.get('url_type'))
+
                 # Ensure it's active and writable by datastore
                 if r.get('state') == 'deleted':
                     r = t.get_action('resource_update')(context, {'id': r['id'], 'state': 'active'})
@@ -79,7 +77,6 @@ class MonthlyCountController:
                 return r['id']
 
         # create resource if missing
-        log.debug('_ensure_private_metrics_resource: creating resource %s', resource_name)
         r = res_create(context, {
             'package_id': pkg['id'],
             'name': resource_name,
@@ -87,11 +84,9 @@ class MonthlyCountController:
             'url': 'datastore',
             'url_type': 'datastore'
         })
-        log.debug('_ensure_private_metrics_resource: resource created id=%s', r.get('id'))
 
         # init datastore schema once
         try:
-            log.debug('_ensure_private_metrics_resource: creating datastore schema')
             t.get_action('datastore_create')(context, {
                 'resource_id': r['id'],
                 'force': True,
@@ -111,7 +106,6 @@ class MonthlyCountController:
     @staticmethod
     def _get_or_bootstrap_resource(context):
         res_id = MonthlyCountController._ensure_private_metrics_resource(context)
-        log.debug('_get_or_bootstrap_resource: ensured resource id=%s', res_id)
 
         # ensure datastore exists (if someone recreated resource without DS)
         try:
@@ -137,14 +131,12 @@ class MonthlyCountController:
     def _count_total(context):
         out = t.get_action('package_search')(context, {'fq': '*:* AND (type:dataset)', 'rows': 0})
         count = int(out['count'])
-        log.debug('_count_total: count=%d', count)
         return count
 
     @staticmethod
     def _count_total_molecules(context):
         out = t.get_action('package_search')(context, {'fq': '*:* AND (type:molecule)', 'rows': 0})
         count = int(out['count'])
-        log.debug('_count_toal_molecules: count=%d', count)
         return count
 
     @staticmethod
@@ -171,9 +163,7 @@ class MonthlyCountController:
     @staticmethod
     def _count_for_org(context, org_id):
 
-        log.debug(f'COUNTING STARTS for {org_id} ')
         out = t.get_action('package_search')(context, {'fq': 'owner_org:{} AND (type:dataset)'.format(org_id), 'rows': 0})
-        log.debug("_count_for_org: count=%s for org_id=%s", out['count'], org_id)
         cnt = int(out['count'])
         log.debug('_count_for_org: count=%s for org_id=%s', cnt, org_id)
         return cnt
@@ -181,12 +171,9 @@ class MonthlyCountController:
     @staticmethod
     def _snapshot_now(context, snapshot_date=None):
         """Compute counts and upsert to the Datastore."""
-        log.debug('_snapshot_now: start snapshot_date=%s', snapshot_date)
         res_id = MonthlyCountController._ensure_private_metrics_resource(context)
-        log.debug('_snapshot_now: target res_id=%s', res_id)
 
         today = (snapshot_date or datetime.date.today()).isoformat()
-        log.debug('_snapshot_now: today=%s', today)
 
         total = MonthlyCountController._count_total(context)
         records = [{
@@ -202,7 +189,6 @@ class MonthlyCountController:
             'dataset_count': total_molecules
 
         })
-        log.debug('_snapshot_now: appended TOTAL=%d', total)
 
         for org in MonthlyCountController._org_handles(context):
             org_id = org['id'] or org['name']
@@ -233,7 +219,6 @@ class MonthlyCountController:
     @staticmethod
     def _is_sysadmin():
         user = t.c.user
-        log.debug('_is_sysadmin: user=%s', user)
         if not user:
             return False
         try:

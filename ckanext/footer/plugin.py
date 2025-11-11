@@ -3,7 +3,6 @@ import datetime
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit, config
 from ckanext.related_resources.models.related_resources import RelatedResources as related_resources
-from ckanext.footer.controller.search_controller import SearchMoleculeController
 from ckanext.footer.controller.monthlycount import MonthlyCountController #DATASET_NAME, RESOURCE_NAME, OWNER_ORG
 import ckan.logic as logic
 import click
@@ -96,7 +95,6 @@ class FooterPlugin(plugins.SingletonPlugin):
         session['search_results_final'] = search_results
         session['search_params'] = search_params_result
         session.save()
-        #log.debug("THESE ARE THE RESULTS:%s" %search_results)
 
         return search_results
 
@@ -104,7 +102,6 @@ class FooterPlugin(plugins.SingletonPlugin):
     def molecule_view_search():
         packages_list = {'count': '', 'results': '', 'facets': ''}
         search_params = None
-        #log.debug(f'THESE ARE THE RESULTS: final {packages_list}')
 
         return packages_list, search_params
 
@@ -123,7 +120,6 @@ class MonthlyCountsAdminPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IClick)
 
     def update_config(self, config):
-        log.debug('update_config: adding templates directory')
         toolkit.add_template_directory(config, 'templates')
 
 
@@ -142,12 +138,10 @@ class MonthlyCountsAdminPlugin(plugins.SingletonPlugin):
 
     # --- Admin page blueprint ---
     def get_blueprint(self):
-        log.debug('get_blueprint: creating blueprint monthly_counts_admin')
         bp = Blueprint('monthly_counts_admin', __name__)
 
         @bp.route('/ckan-admin/monthly-counts', methods=['GET', 'POST'])
         def monthly_counts_admin():
-            log.debug('monthly_counts_admin: start, method=%s', request.method)
             context = {
                 'user': toolkit.c.user,
                 'auth_user_obj': toolkit.c.userobj,
@@ -157,10 +151,8 @@ class MonthlyCountsAdminPlugin(plugins.SingletonPlugin):
                       context.get('user'), context.get('ignore_auth'))
 
             res_id = MonthlyCountController._get_or_bootstrap_resource(context)
-            log.debug('monthly_counts_admin: resource ready res_id=%s', res_id)
 
             if request.method == 'POST' and request.form.get('do_snapshot'):
-                log.debug('monthly_counts_admin: POST do_snapshot detected')
                 try:
                     MonthlyCountController._snapshot_now(context)
                     toolkit.h.flash_success('Snapshot created successfully.')
@@ -207,7 +199,6 @@ class MonthlyCountsAdminPlugin(plugins.SingletonPlugin):
 
             # Ensure the target resource exists before upsert
             res_id = MonthlyCountController._get_or_bootstrap_resource(context)
-            log.debug('CLI snapshot: ensured resource res_id=%s', res_id)
 
             MonthlyCountController._snapshot_now(context, snap_date)
             log.debug('CLI snapshot: completed OK')

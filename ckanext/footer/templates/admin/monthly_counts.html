@@ -61,10 +61,10 @@
     <thead>
       <tr>
         <th style="white-space:nowrap;">Date</th>
-        {% for repo in repos|sort if repo != '__TOTAL__' %}
+        {% for repo in repos|sort if repo != '__TOTAL__Datasets' %}
           <th style="white-space:nowrap;">{{ repo }}</th>
         {% endfor %}
-        {% if '__TOTAL__' in repos %}
+        {% if '__TOTAL__Datasets' in repos %}
           <th style="white-space:nowrap;">TOTAL Datasets</th>
         {% endif %}
       </tr>
