@@ -115,7 +115,7 @@ class MonthlyCountController:
 
         # ensure datastore exists (if someone recreated resource without DS)
         try:
-            t.get_action('datastore_info')(context, {'resource_id': res_id})
+            t.get_action('datastore_info')(context, {'id': res_id})
             log.debug('_get_or_bootstrap_resource: datastore_info OK for %s', res_id)
         except t.ValidationError as e:
             log.debug('_get_or_bootstrap_resource: datastore_info failed, creating: %s', e.error_dict)
