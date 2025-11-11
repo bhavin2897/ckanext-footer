@@ -22,7 +22,7 @@ It allows sysadmins to record and review dataset counts per organization over ti
 ---
 
 ## Features
-
+Firstly, create a new dataset with a hidden organization if possible. 
 ### Admin UI
 A new page is available at:
     

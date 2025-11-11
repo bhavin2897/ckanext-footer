@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 import ckan.plugins as plugins
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as toolkit, config
 from ckanext.related_resources.models.related_resources import RelatedResources as related_resources
 from ckanext.footer.controller.search_controller import SearchMoleculeController
 from ckanext.footer.controller.monthlycount import MonthlyCountController #DATASET_NAME, RESOURCE_NAME, OWNER_ORG
@@ -112,7 +112,7 @@ class FooterPlugin(plugins.SingletonPlugin):
 # New Extension
 DATASET_NAME = 'site-monthly-counts'
 RESOURCE_NAME = 'monthly_counts'
-OWNER_ORG = '9dc6fd86-014c-41ec-8473-535d439078fb'  # can be overridden via ini
+OWNER_ORG =  'ckanext.monthlycounts.owner_org' # can be overridden via ini
 
 
 class MonthlyCountsAdminPlugin(plugins.SingletonPlugin):
@@ -125,6 +125,7 @@ class MonthlyCountsAdminPlugin(plugins.SingletonPlugin):
     def update_config(self, config):
         log.debug('update_config: adding templates directory')
         toolkit.add_template_directory(config, 'templates')
+
 
     def configure(self, config):
         global DATASET_NAME, RESOURCE_NAME, OWNER_ORG

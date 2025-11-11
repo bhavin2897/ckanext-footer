@@ -10,7 +10,7 @@ class MonthlyCountController:
     # will be overwritten from plugin.configure
     DATASET_NAME = 'site-monthly-counts'
     RESOURCE_NAME = 'monthly_counts'
-    OWNER_ORG = '0170ebc4-b55a-47a9-96b2-9981cef2ac7e'
+    OWNER_ORG = '9dc6fd86-014c-41ec-8473-535d439078fb'
     OWNER_TYPE = 'repository'
 
     @staticmethod
@@ -56,7 +56,7 @@ class MonthlyCountController:
                 log.debug('_ensure_private_metrics_resource: package created id=%s', pkg.get('id'))
             except t.ValidationError as e:
                 log.debug('_ensure_private_metrics_resource: package_create ValidationError=%s', e.error_dict)
-                pkg = pkg_show({'ignore_auth': True}, {'id': dataset_name})
+                pkg = pkg_show(context, {'id': dataset_name})
                 log.debug('_ensure_private_metrics_resource: fetched existing package id=%s', pkg.get('id'))
 
         if pkg.get('state') == 'deleted':

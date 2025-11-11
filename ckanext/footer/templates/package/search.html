@@ -5,7 +5,6 @@
 
 {% set firstPackage = [] %}
 {% block package_search_results_list %}
-<p> {{ page }}</p>
     {% if page.items %}
         {% set firstPackage = page.items[0] %}
     {% endif %}
