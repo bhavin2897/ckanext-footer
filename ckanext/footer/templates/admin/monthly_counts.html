@@ -61,6 +61,7 @@
     <thead>
       <tr>
         <th style="white-space:nowrap;">Date</th>
+        {# normal repos, without the total column #}
         {% for repo in repos|sort if repo != '__TOTAL__Datasets' %}
           <th style="white-space:nowrap;">{{ repo }}</th>
         {% endfor %}
@@ -73,12 +74,12 @@
       {% for d in by_date.keys()|list|sort(reverse=True) %}
         <tr>
           <td style="white-space:nowrap;">{{ d }}</td>
-          {% for repo in repos|sort if repo != '__TOTAL__' %}
+          {% for repo in repos|sort if repo != '__TOTAL__Datasets' %}
             <td style="text-align:right;">{{ by_date[d].get(repo, '') }}</td>
           {% endfor %}
-          {% if '__TOTAL__' in repos %}
+          {% if '__TOTAL__Datasets' in repos %}
             <td style="text-align:right; font-weight:bold;">
-              {{ by_date[d].get('__TOTAL__', '') }}
+              {{ by_date[d].get('__TOTAL__Datasets', '') }}
             </td>
           {% endif %}
         </tr>
@@ -86,6 +87,7 @@
     </tbody>
   </table>
 </div>
+
 
 
 {% endblock %}
