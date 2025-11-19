@@ -1,5 +1,10 @@
 {% ckan_extends %}
 
+{% block bodytag %}
+{{ super() }}
+ data-type="{{ dataset_type }}"
+{% endblock %}
+
 {# Setting and limiting the molecules only for 10-15 datasets when loading #}
 
 
